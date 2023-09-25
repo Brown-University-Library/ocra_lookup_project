@@ -5,8 +5,8 @@ from django.conf import settings as project_settings
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from x_app.lib import version_helper
-from x_app.lib.version_helper import GatherCommitAndBranchData
+from ocra_lookup_app.lib import version_helper
+from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
 
 
 log = logging.getLogger(__name__)
