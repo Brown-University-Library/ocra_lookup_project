@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     container_name: django_template_4p2_stuff-web-container
     volumes:
-      - .:/container_project_stuff/x_project    # maps the current 'project' directory on the host to '/container_project_stuff/the_project' in the Docker container.
+      - .:/container_project_stuff/ocra_lookup_project    # maps the current 'project' directory on the host to '/container_project_stuff/the_project' in the Docker container.
       - ../DBs:/container_project_stuff/DBs     # maps the 'stuff/DBs' directory on the host to '/container_project_stuff/DBs' in the Docker container.
       - ../logs:/container_project_stuff/logs   # maps the 'stuff/logs' directory on the host to '/container_project_stuff/logs' in the Docker container.
     ports:

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-## LOCALDEV settings for django `x_project`
+## LOCALDEV settings for django `ocra_lookup_project`
 ##
 ## This file is loaded by `env/bin/activate` when running locally...
 ## ...and by `project/config/passenger_wsgi.py` on our servers.
@@ -34,7 +34,7 @@ export OCRA_LKP__DATABASES_JSON='
       "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "HOST": "",
-        "NAME": "../DB/x_project.sqlite3",
+        "NAME": "../DB/ocra_lookup_project.sqlite3",
         "PASSWORD": "",
         "PORT": "",
         "USER": ""
@@ -49,7 +49,7 @@ export OCRA_LKP__EMAIL_HOST="localhost"
 export OCRA_LKP__EMAIL_PORT="1026"  # will be converted to int in settings.py
 export OCRA_LKP__SERVER_EMAIL="donotreply_x-project@domain.edu"
 
-export OCRA_LKP__LOG_PATH="../logs/x_project.log"
+export OCRA_LKP__LOG_PATH="../logs/ocra_lookup_project.log"
 export OCRA_LKP__LOG_LEVEL="DEBUG"
 
 export OCRA_LKP__CSRF_TRUSTED_ORIGINS_JSON='["localhost", "127.0.0.1"]'
@@ -96,7 +96,7 @@ export OCRA_LKP__TEST_META_DCT_JSON='{
   "Shibboleth-isMemberOf": "aa:bb:cc;dd:ee:ff;the:group;gg:hh"
 }'
 
-export OCRA_LKP__LOGIN_PROBLEM_EMAIL="x_project_problems@domain.edu"
+export OCRA_LKP__LOGIN_PROBLEM_EMAIL="ocra_lookup_project_problems@domain.edu"
 
 
 ## end --------------------------------------------------------------
