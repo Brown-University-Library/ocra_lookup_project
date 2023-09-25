@@ -46,7 +46,7 @@ from django.core.wsgi import get_wsgi_application
 # print( 'the initial env, ```{}```'.format( pprint.pformat(dict(os.environ)) ) )
 
 PROJECT_DIR_PATH = os.path.dirname( os.path.dirname(os.path.abspath(__file__)) )  # the parent of the config directory is the project directory
-ENV_SETTINGS_FILE = os.environ['XPRJCT_42__ENV_SETTINGS_PATH']
+ENV_SETTINGS_FILE = os.environ['OCRA_LKP__ENV_SETTINGS_PATH']
 
 ## update path
 sys.path.append( PROJECT_DIR_PATH )

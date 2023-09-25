@@ -26,15 +26,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-3ory+ty87_wq8-21ki6d&a+x=z9_$2m(gr4@vxri@@^g7u!*oc'
-SECRET_KEY = os.environ[ 'XPRJCT_42__SECRET_KEY' ]
+SECRET_KEY = os.environ[ 'OCRA_LKP__SECRET_KEY' ]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = json.loads( os.environ['XPRJCT_42__DEBUG_JSON'] )
+DEBUG = json.loads( os.environ['OCRA_LKP__DEBUG_JSON'] )
 
-ADMINS = json.loads( os.environ['XPRJCT_42__ADMINS_JSON'] )
+ADMINS = json.loads( os.environ['OCRA_LKP__ADMINS_JSON'] )
 
-ALLOWED_HOSTS = json.loads( os.environ['XPRJCT_42__ALLOWED_HOSTS_JSON'] )
+ALLOWED_HOSTS = json.loads( os.environ['OCRA_LKP__ALLOWED_HOSTS_JSON'] )
 
 
 # Application definition
@@ -126,13 +126,13 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = os.environ['XPRJCT_42__STATIC_URL']
-STATIC_ROOT = os.environ['XPRJCT_42__STATIC_ROOT']  # needed for collectstatic command
+STATIC_URL = os.environ['OCRA_LKP__STATIC_URL']
+STATIC_ROOT = os.environ['OCRA_LKP__STATIC_ROOT']  # needed for collectstatic command
 
 # Email
-SERVER_EMAIL = os.environ['XPRJCT_42__SERVER_EMAIL']
-EMAIL_HOST = os.environ['XPRJCT_42__EMAIL_HOST']
-EMAIL_PORT = int( os.environ['XPRJCT_42__EMAIL_PORT'] )
+SERVER_EMAIL = os.environ['OCRA_LKP__SERVER_EMAIL']
+EMAIL_HOST = os.environ['OCRA_LKP__EMAIL_HOST']
+EMAIL_PORT = int( os.environ['OCRA_LKP__EMAIL_PORT'] )
 
 
 # Default primary key field type
@@ -158,7 +158,7 @@ LOGGING = {
         'logfile': {
             'level':'DEBUG',
             'class':'logging.FileHandler',  # note: configure server to use system's log-rotate to avoid permissions issues
-            'filename': os.environ['XPRJCT_42__LOG_PATH'],
+            'filename': os.environ['OCRA_LKP__LOG_PATH'],
             'formatter': 'standard',
         },
         'console':{
@@ -175,7 +175,7 @@ LOGGING = {
         },
         'x_app': {
             'handlers': ['logfile'],
-            'level': os.environ['XPRJCT_42__LOG_LEVEL'],
+            'level': os.environ['OCRA_LKP__LOG_LEVEL'],
             'propagate': False
         },
         # 'django.db.backends': {  # re-enable to check sql-queries! <https://docs.djangoproject.com/en/3.2/topics/logging/#django-db-backends>

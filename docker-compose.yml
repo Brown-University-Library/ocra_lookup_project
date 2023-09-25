@@ -16,7 +16,7 @@ services:
       - "8000:8000"
 
     environment:
-      - XPRJCT_42__ENV_SETTINGS_PATH=config/settings_localdev_env.sh  # used by django's config/wsgi.py to load settings
+      - OCRA_LKP__ENV_SETTINGS_PATH=config/settings_localdev_env.sh  # used by django's config/wsgi.py to load settings
 
     env_file: ./config/settings_localdev_env.sh                       # i don't exactly understand how this is required, but from testing, it is.
 
