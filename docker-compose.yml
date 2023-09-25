@@ -1,0 +1,23 @@
+version: "3.8"
+## Specifies the version of the Compose file-format; must be compatible with the version of the Docker Engine.
+## See: https://docs.docker.com/compose/compose-file/compose-versioning/
+   
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_template_4p2_stuff-web-container
+    volumes:
+      - .:/container_project_stuff/x_project    # maps the current 'project' directory on the host to '/container_project_stuff/the_project' in the Docker container.
+      - ../DBs:/container_project_stuff/DBs     # maps the 'stuff/DBs' directory on the host to '/container_project_stuff/DBs' in the Docker container.
+      - ../logs:/container_project_stuff/logs   # maps the 'stuff/logs' directory on the host to '/container_project_stuff/logs' in the Docker container.
+    ports:
+      - "8000:8000"
+
+    environment:
+      - XPRJCT_42__ENV_SETTINGS_PATH=config/settings_localdev_env.sh  # used by django's config/wsgi.py to load settings
+
+    env_file: ./config/settings_localdev_env.sh                       # i don't exactly understand how this is required, but from testing, it is.
+
+    command: /bin/bash -c "python manage.py runserver 0.0.0.0:8000"   # this not only starts run-server, but keeps the container running.
