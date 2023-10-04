@@ -82,12 +82,14 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '../DBs/db.sqlite3',
-    }
-}
+DATABASES = json.loads( os.environ['OCRA_LKP__DATABASES_JSON'] )
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': '../DBs/db.sqlite3',
+#     }
+# }
 
 
 # Password validation
