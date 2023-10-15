@@ -18,7 +18,15 @@ log = logging.getLogger(__name__)
 
 
 def info(request):
-    return HttpResponse( "Hello, world." )
+    return HttpResponse( 'info coming' )
+
+
+def find(request):
+    return HttpResponse( 'find coming' )
+
+
+def results(request):
+    return HttpResponse( 'results coming' )
 
 
 # -------------------------------------------------------------------
