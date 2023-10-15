@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="form_div">
+    <div id="some_part">
+        <h1>Make reading-list for...</h1>
+        <form action="{{ url_for('find') }}" method="POST">
+            <div class="form-group">
+                <label for="name">CourseID</label>
+                <input type="text" name="name" placeholder="Enter a name" class="form-control" id="name">
+            </div>
+            <button type="submit" class="btn btn-primary">Find</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

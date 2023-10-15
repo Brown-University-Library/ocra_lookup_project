@@ -22,7 +22,9 @@ def info(request):
 
 
 def find(request):
-    return HttpResponse( 'find coming' )
+    # return HttpResponse( 'find coming' )
+    context = {}
+    return render( request, 'ocra_lookup_app/find.html', context )
 
 
 def results(request):
