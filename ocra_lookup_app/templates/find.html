@@ -4,7 +4,8 @@
 <div id="form_div">
     <div id="some_part">
         <h1>Make reading-list for...</h1>
-        <form action="{{ url_for('find') }}" method="POST">
+        {% comment %}<form action="{{ url_for('find') }}" method="POST">{% endcomment %}
+        <form action="/foo/" method="POST"></form>
             <div class="form-group">
                 <label for="name">CourseID</label>
                 <input type="text" name="name" placeholder="Enter a name" class="form-control" id="name">

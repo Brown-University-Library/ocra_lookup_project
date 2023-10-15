@@ -22,9 +22,10 @@ def info(request):
 
 
 def find(request):
-    # return HttpResponse( 'find coming' )
+    log.debug( 'starting find()' )
     context = {}
-    return render( request, 'ocra_lookup_app/find.html', context )
+    # return render( request, 'ocra_lookup_app/templates/find.html', context )
+    return render( request, 'find.html', context )
 
 
 def results(request):
@@ -42,6 +43,7 @@ def error_check( request ):
         - run, in another terminal window: `python -m smtpd -n -c DebuggingServer localhost:1026`,
         - (or substitue your own settings for localhost:1026)
     """
+    log.debug( 'starting error_check()' )
     log.debug( f'project_settings.DEBUG, ``{project_settings.DEBUG}``' )
     if project_settings.DEBUG == True:
         log.debug( 'triggering exception' )
@@ -53,6 +55,7 @@ def error_check( request ):
 
 def version( request ):
     """ Returns basic branch and commit data. """
+    log.debug( 'starting version()' )
     rq_now = datetime.datetime.now()
     gatherer = GatherCommitAndBranchData()
     trio.run( gatherer.manage_git_calls )
