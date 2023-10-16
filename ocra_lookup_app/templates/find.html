@@ -1,17 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div id="form_div">
-    <div id="some_part">
-        <h1>Make reading-list for...</h1>
-        {% comment %}<form action="{{ url_for('find') }}" method="POST">{% endcomment %}
-        <form action="/foo/" method="POST"></form>
-            <div class="form-group">
-                <label for="name">CourseID</label>
-                <input type="text" name="name" placeholder="Enter a name" class="form-control" id="name">
-            </div>
-            <button type="submit" class="btn btn-primary">Find</button>
-        </form>
-    </div>
-</div>
+<button
+    hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode&type=single"
+    hx-target="#joke-container"
+>
+    Make me laugh!
+</button>
+
+<p id="joke-container">Click the button to load a joke...</p>
 {% endblock %}
