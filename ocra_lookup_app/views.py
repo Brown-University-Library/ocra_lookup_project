@@ -31,6 +31,11 @@ def find(request):
 def results(request):
     return HttpResponse( 'results coming' )
 
+## experimentation
+def htmx_example(request):
+    """ From: <https://www.sitepoint.com/htmx-introduction/> """
+    return render( request, 'htmx_example.html' )
+
 
 # -------------------------------------------------------------------
 # support urls

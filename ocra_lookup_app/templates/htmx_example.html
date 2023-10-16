@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+
+<style>
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+</style>
+
+
+{% endblock extra_head %}
+
+{% block header %}
+    <h1>htmx examples</h1>
+{% endblock header %}
+
+{% block content %}
+
+<hr>
+<hr>
+
+<h2>example: button</h2>
+
+<button
+    hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode&type=single"
+    hx-target="#joke-container"
+>
+    Make me laugh!
+</button>
+
+<p id="joke-container">Click the button to load a joke...</p>
+
+<hr>
+<hr>
+
+<h2>example: input on return-key</h2>
+
+<label>Keyword:
+    <input
+      type="text"
+      placeholder="Enter a keyword..."
+      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+      hx-target="#joke-container-2"
+      name="contains"
+    />
+</label>
+  
+<p id="joke-container-2">Results will appear here</p>
+
+<hr>
+<hr>
+
+<h2>example: input as-i-type, with delay</h2>
+
+<label>Keyword:
+    <input
+      type="text"
+      placeholder="Enter a keyword..."
+      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+      hx-target="#joke-container-3"
+      hx-trigger="keyup delay:500ms"
+      name="contains"
+    />
+</label>
+  
+<p id="joke-container-3">Results will appear here</p>
+
+<hr>
+<hr>
+
+<h2>example: input on return-key, with spinner</h2>
+
+<label>Keyword:
+    <span class="loader htmx-indicator"></span>
+    <input
+      type="text"
+      placeholder="Enter a keyword..."
+      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+      hx-target="#joke-container-4"
+      hx-indicator=".loader"
+      name="contains"
+    />
+</label>
+  
+<p id="joke-container-4">Results will appear here</p>
+
+<hr>
+<hr>
+
+{% endblock content %}
