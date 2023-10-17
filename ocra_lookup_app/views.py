@@ -31,11 +31,6 @@ def find(request):
 def results(request):
     return HttpResponse( 'results coming' )
 
-## experimentation
-def htmx_example(request):
-    """ From: <https://www.sitepoint.com/htmx-introduction/> """
-    return render( request, 'htmx_example.html' )
-
 
 # -------------------------------------------------------------------
 # support urls
@@ -75,3 +70,22 @@ def version( request ):
 
 def root( request ):
     return HttpResponseRedirect( reverse('info_url') )
+
+
+# -------------------------------------------------------------------
+# htmx
+# -------------------------------------------------------------------
+
+
+def htmx_example(request):
+    """ From: <https://www.sitepoint.com/htmx-introduction/> """
+    return render( request, 'htmx_example.html' )
+
+
+def htmx_f__new_content(request):
+    html = '''
+<div id="example_5_content" class="fadeIn">
+  New Content
+</div>
+'''
+    return HttpResponse( html )

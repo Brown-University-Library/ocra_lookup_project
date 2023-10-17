@@ -54,11 +54,11 @@
 
 <label>Keyword:
     <input
-      type="text"
-      placeholder="Enter a keyword..."
-      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
-      hx-target="#joke-container-2"
-      name="contains"
+        type="text"
+        placeholder="Enter a keyword..."
+        hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+        hx-target="#joke-container-2"
+        name="contains"
     />
 </label>
   
@@ -71,12 +71,12 @@
 
 <label>Keyword:
     <input
-      type="text"
-      placeholder="Enter a keyword..."
-      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
-      hx-target="#joke-container-3"
-      hx-trigger="keyup delay:500ms"
-      name="contains"
+        type="text"
+        placeholder="Enter a keyword..."
+        hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+        hx-target="#joke-container-3"
+        hx-trigger="keyup delay:500ms"
+        name="contains"
     />
 </label>
   
@@ -90,17 +90,33 @@
 <label>Keyword:
     <span class="loader htmx-indicator"></span>
     <input
-      type="text"
-      placeholder="Enter a keyword..."
-      hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
-      hx-target="#joke-container-4"
-      hx-indicator=".loader"
-      name="contains"
+        type="text"
+        placeholder="Enter a keyword..."
+        hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+        hx-target="#joke-container-4"
+        hx-indicator=".loader"
+        name="contains"
     />
 </label>
   
 <p id="joke-container-4">Results will appear here</p>
 
+<hr>
+<hr>
+
+<h2>example 5: new-content fade-in</h2>
+
+<button 
+    hx-get="/htmx_f__new_content/" 
+    hx-target="#example_5_content">
+
+    Fetch Data
+</button>
+  
+<div id="example_5_content">
+    Initial Content
+</div>
+  
 <hr>
 <hr>
 
