@@ -5,11 +5,10 @@ from django.conf import settings as project_settings
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from ocra_lookup_app.lib import find_view_helper
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
-
-from django.views.decorators.csrf import ensure_csrf_cookie
-
 
 log = logging.getLogger(__name__)
 
@@ -23,10 +22,10 @@ def info(request):
     return HttpResponse( 'info coming' )
 
 
+@ensure_csrf_cookie
 def find(request):
     log.debug( 'starting find()' )
-    context = {}
-    # return render( request, 'ocra_lookup_app/templates/find.html', context )
+    context = find_view_helper.make_context( request )
     return render( request, 'find.html', context )
 
 
