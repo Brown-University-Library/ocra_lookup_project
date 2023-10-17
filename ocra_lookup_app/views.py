@@ -26,6 +26,7 @@ def info(request):
 def find(request):
     log.debug( 'starting find()' )
     context = find_view_helper.make_context( request )
+    log.debug( f'context, ``{context}``' )
     return render( request, 'find.html', context )
 
 

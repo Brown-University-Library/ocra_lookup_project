@@ -189,3 +189,8 @@ LOGGING = {
         # },
     }
 }
+
+
+## app-level settings -----------------------------------------------
+PATTERN_LIB_HEADER_URL = os.environ['OCRA_LKP__PATTERN_LIB_HEADER_URL']
+# PATTERN_LIB_CACHE_TIMEOUT = int( os.environ['OCRA_LKP__PATTERN_LIB_CACHE_TIMEOUT'] )
