@@ -1,6 +1,65 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Single File Upload</title>
+        <style type="text/css">
+            div#formbox {
+                padding-top: 2em;
+            }
+            div#prohibited_characters {
+                margin-bottom: -.5em;
+            }
+            p#prohibited_paragraph {
+                font-size: 80%;
+            }
+            p#usage {
+                font-size: 80%;
+                font-style: italic;
+            }
+            */
+        </style>
+    </head>
+    <body>
+        <!-- PATTERN-LIBRARY-HEADER start... -->
+        {{ pattern_header | safe }}
+        <!-- PATTERN-LIBRARY-HEADER end -->
+		<div id="formbox" style="width: 600px; margin: auto;">
+			<fieldset name="Single File Upload">
+                <div id="prohibited_characters">
+                    <p id="prohibited_paragraph"><em>Prohibited filename characters: &nbsp {{ prohibited_characters }}</em></p>
+                </div>
+				{% if error_message %} 
+                    <p style="color: red;">Unsuccessful,<br/>{{ error_message }}</p>
+                {% endif %}
+                {% if success_message %}
+                    <!-- <p style="color: green;">File uploaded successfully</p> -->
+                    {% autoescape off %}
+                    <p style="color: green;">{{ success_message }}</p>
+                    {% endautoescape %}
+                {% endif %}
+				<!-- <form method="post" action="/uploader/" enctype="multipart/form-data"> -->
+                <form method="post" action="{{ uploader_url }}" enctype="multipart/form-data">
+					{% csrf_token %}
+					<dl>
+						<p>
+							<!-- <label>Browse and select a file</label>&nbsp;&nbsp; -->
+                            <label>Browse and select a file...</label>
+                            </br>
+							<input type="file" name="file" autocomplete="off" required>
+						</p>
+					</dl>
+					<p>
+                        <hr>
+						<input type="submit" value="Upload">
+					</p>
+				</form>
+			</fieldset>
+            <p id="usage">
+                Usage: Select a file via the "Choose File" button, then click the "Upload" button. 
+                The file will be uploaded to the server, and a link to the file will be displayed.
+                Then repeat; no need to hit the back-button.
+            </p>
 
-{% block content %}
-<p>Find coming</p>
-
-{% endblock %}
+		</div>
+    </body>
+</html>
