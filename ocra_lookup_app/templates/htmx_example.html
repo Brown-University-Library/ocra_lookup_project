@@ -3,6 +3,8 @@
 {% block extra_head %}
 
 <style>
+
+/* for ``example: input on return-key, with spinner`` */
 .loader {
     width: 48px;
     height: 48px;
@@ -13,8 +15,7 @@
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
     }
-
-    @keyframes rotation {
+@keyframes rotation {
     0% {
         transform: rotate(0deg);
     }
@@ -22,6 +23,17 @@
         transform: rotate(360deg);
     }
 } 
+
+
+/* for ``example 5: new-content fade-in (of fragment)`` */
+.fadeIn {
+  animation: fadeIn 2.5s;
+}
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
 </style>
 
 
@@ -114,7 +126,7 @@
 </button>
   
 <div id="example_5_content">
-    Initial Content
+    Initial Content Initial Content Initial content
 </div>
   
 <hr>
