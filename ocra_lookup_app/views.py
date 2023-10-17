@@ -8,6 +8,8 @@ from django.urls import reverse
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
 
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 
 log = logging.getLogger(__name__)
 
@@ -77,12 +79,17 @@ def root( request ):
 # -------------------------------------------------------------------
 
 
+@ensure_csrf_cookie
 def htmx_example(request):
     """ From: <https://www.sitepoint.com/htmx-introduction/> """
     return render( request, 'htmx_example.html' )
 
 
 def htmx_f__new_content(request):
+    """ Serves out content for htmx_example.html, specifically for 
+    - ``example 5: new-content fade-in (of fragment)`` 
+    - ``example 6: form-validation (client-side-only)``
+    """
     html = '''
 <div id="example_5_content" class="fadeIn">
   New Content

@@ -104,7 +104,7 @@
 <hr>
 <hr>
 
-<h2>example 5: new-content fade-in</h2>
+<h2>example 5: new-content fade-in (of fragment)</h2>
 
 <button 
     hx-get="/htmx_f__new_content/" 
@@ -117,6 +117,19 @@
     Initial Content
 </div>
   
+<hr>
+<hr>
+
+<h2>example 6: form-validation (client-side-only)</h2>
+
+<form hx-post="/htmx_f__new_content/">
+    {% csrf_token %}
+    <label>Email:
+        <input type="email" name="email" required>
+    </label>
+    <button>Submit</button>
+</form>
+
 <hr>
 <hr>
 
