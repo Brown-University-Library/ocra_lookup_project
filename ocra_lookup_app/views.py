@@ -48,47 +48,70 @@ def find(request):
 def form_handler(request):
     """ Handles POST from find-form. """
     log.debug( 'starting form_handler()' )
-    log.debug( f'request, ``{pprint.pformat(request)}``' )
-    ## clear out session error text ---------------------------------
-    log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-    request.session['session_error_message'] = ''
-    ## examine POST -------------------------------------------------
+    request.session['session_error_message'] = ''  # session-errors set here
     try:
         if request.method != 'POST':
             log.debug( 'non-POST detected; returning bad-request' )
             return HttpResponseBadRequest( '400 / Bad Request' )
-        log.debug( 'POST detected' )
-        log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
-        ## handle form ------------------------------------------
-        log.debug( 'about to instantiate form' )
-        # form = UploadFileForm(request.POST, request.FILES)
         form = CourseAndEmailForm( request.POST )
-        log.debug( f'form.__dict__, ``{pprint.pformat(form.__dict__)}``' )
         if form.is_valid():
-            log.debug( 'form is valid' )
-            log.debug( f'form.cleaned_data, ``{pprint.pformat(form.cleaned_data)}``' )
-            log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-            log.debug( 'setting redirect to results' )
             resp = HttpResponseRedirect( reverse('results_url') )  
         else:
-            log.debug( 'form not valid' )
-            log.debug( f'form.errors, ``{pprint.pformat(form.errors)}``' )
-            errors_html: str = form.errors.as_ul()
-            log.debug( f'errors_html, ``{pprint.pformat(errors_html)}``' )
             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
-            request.session['session_error_message'] = errors_html
-            log.debug( 'setting redirect back to find-form' )
+            request.session['session_error_message'] = form.errors.as_ul()          # for display back in find-form
             resp = HttpResponseRedirect( reverse('find_url') )
-        log.debug( 'POST handled, about to redirect' )
-        log.debug( f'at end of POST; request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
-        log.debug( f'at end of POST; request.session["session_error_message"], ``{pprint.pformat(request.session["session_error_message"])}``' )
     except Exception as e:
         log.exception( 'problem in uploader()...' )
         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
     return resp    
-    return HttpResponse( 'form-handler coming' )
-    # return HttpResponseRedirect( reverse('results_url') )
+    ## end def form_handler()
+
+
+# def form_handler(request):
+#     """ Handles POST from find-form. """
+#     log.debug( 'starting form_handler()' )
+#     log.debug( f'request, ``{pprint.pformat(request)}``' )
+#     ## clear out session error text ---------------------------------
+#     log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+#     request.session['session_error_message'] = ''
+#     ## examine POST -------------------------------------------------
+#     try:
+#         if request.method != 'POST':
+#             log.debug( 'non-POST detected; returning bad-request' )
+#             return HttpResponseBadRequest( '400 / Bad Request' )
+#         log.debug( 'POST detected' )
+#         log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
+#         ## handle form ------------------------------------------
+#         log.debug( 'about to instantiate form' )
+#         # form = UploadFileForm(request.POST, request.FILES)
+#         form = CourseAndEmailForm( request.POST )
+#         log.debug( f'form.__dict__, ``{pprint.pformat(form.__dict__)}``' )
+#         if form.is_valid():
+#             log.debug( 'form is valid' )
+#             log.debug( f'form.cleaned_data, ``{pprint.pformat(form.cleaned_data)}``' )
+#             log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+#             log.debug( 'setting redirect to results' )
+#             resp = HttpResponseRedirect( reverse('results_url') )  
+#         else:
+#             log.debug( 'form not valid' )
+#             log.debug( f'form.errors, ``{pprint.pformat(form.errors)}``' )
+#             errors_html: str = form.errors.as_ul()
+#             log.debug( f'errors_html, ``{pprint.pformat(errors_html)}``' )
+#             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
+#             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
+#             request.session['session_error_message'] = errors_html
+#             log.debug( 'setting redirect back to find-form' )
+#             resp = HttpResponseRedirect( reverse('find_url') )
+#         log.debug( 'POST handled, about to redirect' )
+#         log.debug( f'at end of POST; request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
+#         log.debug( f'at end of POST; request.session["session_error_message"], ``{pprint.pformat(request.session["session_error_message"])}``' )
+#     except Exception as e:
+#         log.exception( 'problem in uploader()...' )
+#         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
+#     return resp    
+#     ## end def form_handler()
+
 
 def results(request):
     return HttpResponse( 'results coming' )
