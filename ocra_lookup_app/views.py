@@ -1,4 +1,4 @@
-import datetime, json, logging
+import datetime, json, logging, pprint
 
 import trio
 from django.conf import settings as project_settings
@@ -96,3 +96,48 @@ def htmx_f__new_content(request):
 </div>
 '''
     return HttpResponse( html )
+
+
+def htmx_f__email_validator(request):
+    """ Serves out content for `example 7: form-validation (server-side)`, 
+        specifically for email-validator response. """
+    log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
+    html = '<p>email-validator response</p>'
+    return HttpResponse( html )
+
+
+# def htmx_f__email_validator(request):
+#     """ Serves out content for `example 7: form-validation (server-side)`, 
+#         specifically for email-validator response. """
+#     log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
+#     email_data = request.POST.get( 'email', '' )
+#     log.debug( f'email_data, ``{email_data}``' )
+#     if email_data == '':
+#         html = '''<p>email cannot be empty.</p>
+# '''
+#         return HttpResponse( html )
+#     else:
+#         return HttpResponse()
+
+
+def htmx_f__form_handler(request):
+    """ Serves out content for `example 7: form-validation (server-side)`, 
+        specifically for submit-form response. """
+    log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
+    email_data = request.POST.get( 'email', '' )
+    if email_data == '':
+        html = '''<p>email cannot be empty.</p>'''
+        return HttpResponse( html )
+    else:
+        return HttpResponseRedirect( reverse('htmx_results_url') )
+
+
+# def htmx_f__form_handler(request):
+#     """ Serves out content for `example 7: form-validation (server-side)`, 
+#         specifically for submit-form response. """
+#     html = '<p>form-handler response</p>'
+#     return HttpResponse( html )
+
+
+def htmx_results(request):
+    return HttpResponse( 'htmx-experiment results coming' )

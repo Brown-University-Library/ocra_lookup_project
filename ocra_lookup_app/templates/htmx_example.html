@@ -48,7 +48,7 @@
 <hr>
 <hr>
 
-<h2>example: button</h2>
+<h2>example 1: button</h2>
 
 <button
     hx-get="https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode&type=single"
@@ -62,7 +62,7 @@
 <hr>
 <hr>
 
-<h2>example: input on return-key</h2>
+<h2>example 2: input on return-key</h2>
 
 <label>Keyword:
     <input
@@ -79,7 +79,7 @@
 <hr>
 <hr>
 
-<h2>example: input as-i-type, with delay</h2>
+<h2>example 3: input as-i-type, with delay</h2>
 
 <label>Keyword:
     <input
@@ -97,7 +97,7 @@
 <hr>
 <hr>
 
-<h2>example: input on return-key, with spinner</h2>
+<h2>example 4: input on return-key, with spinner</h2>
 
 <label>Keyword:
     <span class="loader htmx-indicator"></span>
@@ -142,6 +142,21 @@
     <button>Submit</button>
 </form>
 
+<hr>
+<hr>
+
+<h2>example 7: form-validation (server-side)</h2>
+
+<form hx-post="/htmx_f__form_handler/">
+    {% csrf_token %}
+    <div hx-target="this" hx-swap="outerHTML">
+        <label>Email:
+            <input type="email" name="email">
+        </label>
+    </div>
+    <button>Submit</button>
+</form>
+  
 <hr>
 <hr>
 
