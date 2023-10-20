@@ -55,7 +55,8 @@ def form_handler(request):
             return HttpResponseBadRequest( '400 / Bad Request' )
         form = CourseAndEmailForm( request.POST )
         if form.is_valid():
-            resp = HttpResponseRedirect( reverse('results_url') )  
+            url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
+            resp = HttpResponseRedirect( url )  
         else:
             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
