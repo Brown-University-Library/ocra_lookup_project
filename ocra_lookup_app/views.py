@@ -25,24 +25,28 @@ def info(request):
 
 @ensure_csrf_cookie
 def find(request):
+    """ Handles GET to find-form. """
     log.debug( 'starting find()' )
     log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+    log.debug( f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
     context = {}
-    if 'course_code_value' in request.session.keys():
+    if 'course_code_value' in list( request.session.keys() ):
         context['course_code_value'] = request.session['course_code_value']
     if 'email_address_value' in request.session.keys():
         context['email_address_value'] = request.session['email_address_value']
     if 'session_error_message' in request.session.keys():
         errors_html = request.session['session_error_message']
-        context = { 'errors_html': errors_html }
+        context['errors_html'] = errors_html
     log.debug( f'context, ``{context}``' )
     request.session['course_code_value'] = ''
     request.session['email_address_value'] = ''
     request.session['session_error_message'] = ''
+    log.debug( f'context, ``{context}``' )
     return render( request, 'find.html', context )
 
 
 def form_handler(request):
+    """ Handles POST from find-form. """
     log.debug( 'starting form_handler()' )
     log.debug( f'request, ``{pprint.pformat(request)}``' )
     ## clear out session error text ---------------------------------
@@ -63,12 +67,6 @@ def form_handler(request):
         if form.is_valid():
             log.debug( 'form is valid' )
             log.debug( f'form.cleaned_data, ``{pprint.pformat(form.cleaned_data)}``' )
-            1/0
-            # url_and_name_dict: dict = uploader_helper.handle_uploaded_file( request.FILES['file'] )  # if duplicate, will have timestamp appended
-            # filename = url_and_name_dict['filename']
-            # file_url = url_and_name_dict['file_url']
-            # msg = f'File uploaded; link: <a href="{file_url}">{filename}</a>'
-            # request.session['session_success_message'] = msg
             log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
             log.debug( 'setting redirect to results' )
             resp = HttpResponseRedirect( reverse('results_url') )  
