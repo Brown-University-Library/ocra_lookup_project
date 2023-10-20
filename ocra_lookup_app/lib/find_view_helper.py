@@ -6,9 +6,10 @@ log = logging.getLogger(__name__)
 
 
 def make_context( request: str ) -> dict:
-    pattern_header_html: str = common.prep_pattern_header_html()
-    context = {
-        'pattern_header': pattern_header_html,
-    }
+    # pattern_header_html: str = common.prep_pattern_header_html()
+    # context = {
+    #     'pattern_header': pattern_header_html,
+    # }
+    context = {}
     log.debug( f'context keys, ``{context.keys()}``' )
     return context

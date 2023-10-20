@@ -2,13 +2,14 @@ import datetime, json, logging, pprint
 
 import trio
 from django.conf import settings as project_settings
-from django.http import HttpResponse, HttpResponseBadRequest,    HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from ocra_lookup_app.lib import find_view_helper
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
+from .forms import CourseAndEmailForm
 
 log = logging.getLogger(__name__)
 
@@ -25,28 +26,35 @@ def info(request):
 @ensure_csrf_cookie
 def find(request):
     log.debug( 'starting find()' )
-    context = find_view_helper.make_context( request )
+    log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+    context = {}
+    if 'course_code_value' in request.session.keys():
+        context['course_code_value'] = request.session['course_code_value']
+    if 'email_address_value' in request.session.keys():
+        context['email_address_value'] = request.session['email_address_value']
+    if 'session_error_message' in request.session.keys():
+        errors_html = request.session['session_error_message']
+        context = { 'errors_html': errors_html }
     log.debug( f'context, ``{context}``' )
+    request.session['course_code_value'] = ''
+    request.session['email_address_value'] = ''
+    request.session['session_error_message'] = ''
     return render( request, 'find.html', context )
 
 
 def form_handler(request):
     log.debug( 'starting form_handler()' )
     log.debug( f'request, ``{pprint.pformat(request)}``' )
+    ## clear out session error text ---------------------------------
+    log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+    request.session['session_error_message'] = ''
+    ## examine POST -------------------------------------------------
     try:
         if request.method != 'POST':
             log.debug( 'non-POST detected; returning bad-request' )
             return HttpResponseBadRequest( '400 / Bad Request' )
         log.debug( 'POST detected' )
         log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
-        log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-        ## clear out session messages ---------------------------
-        if request.session.get('session_error_message', '') != '':
-            log.warning( 'session_error_message detected in POST; why?' )
-            request.session['session_error_message'] = ''
-        if request.session.get('session_success_message', '') != '':
-            log.warning( 'session_success_message detected in POST; why?' )
-            request.session['session_success_message'] = ''
         ## handle form ------------------------------------------
         log.debug( 'about to instantiate form' )
         # form = UploadFileForm(request.POST, request.FILES)
@@ -55,24 +63,28 @@ def form_handler(request):
         if form.is_valid():
             log.debug( 'form is valid' )
             log.debug( f'form.cleaned_data, ``{pprint.pformat(form.cleaned_data)}``' )
-            url_and_name_dict: dict = uploader_helper.handle_uploaded_file( request.FILES['file'] )  # if duplicate, will have timestamp appended
-            filename = url_and_name_dict['filename']
-            file_url = url_and_name_dict['file_url']
-            msg = f'File uploaded; link: <a href="{file_url}">{filename}</a>'
-            request.session['session_success_message'] = msg
+            1/0
+            # url_and_name_dict: dict = uploader_helper.handle_uploaded_file( request.FILES['file'] )  # if duplicate, will have timestamp appended
+            # filename = url_and_name_dict['filename']
+            # file_url = url_and_name_dict['file_url']
+            # msg = f'File uploaded; link: <a href="{file_url}">{filename}</a>'
+            # request.session['session_success_message'] = msg
             log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+            log.debug( 'setting redirect to results' )
+            resp = HttpResponseRedirect( reverse('results_url') )  
         else:
             log.debug( 'form not valid' )
             log.debug( f'form.errors, ``{pprint.pformat(form.errors)}``' )
-            log.debug( f'form.non_field_errors(), ``{pprint.pformat(form.non_field_errors())}``' )
-            msg: str = form.non_field_errors()[0]
-            log.debug( f'error_message, ``{pprint.pformat( msg )}``' )
-            request.session['session_error_message'] = msg
+            errors_html: str = form.errors.as_ul()
+            log.debug( f'errors_html, ``{pprint.pformat(errors_html)}``' )
+            request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
+            request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
+            request.session['session_error_message'] = errors_html
+            log.debug( 'setting redirect back to find-form' )
+            resp = HttpResponseRedirect( reverse('find_url') )
         log.debug( 'POST handled, about to redirect' )
         log.debug( f'at end of POST; request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
-        log.debug( f'at end of POST; request.session["session_success_message"], ``{pprint.pformat(request.session["session_success_message"])}``' )
         log.debug( f'at end of POST; request.session["session_error_message"], ``{pprint.pformat(request.session["session_error_message"])}``' )
-        resp = HttpResponseRedirect( reverse('uploader_url') )  ## TODO, add message as querystring, then display it
     except Exception as e:
         log.exception( 'problem in uploader()...' )
         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
