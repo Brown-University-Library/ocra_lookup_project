@@ -2,7 +2,7 @@
 
 {% block header %}
     <!-- PATTERN-LIBRARY-HEADER start... -->
-    {{ pattern_header | safe }}
+    {% comment %} {{ pattern_header | safe }} {% endcomment %}
     <!-- PATTERN-LIBRARY-HEADER end -->
 {% endblock header %}
 
@@ -19,7 +19,9 @@
             <p style="color: green;">{{ success_message }}</p>
             {% endautoescape %}
         {% endif %}
-        <form action="/submit" method="post">
+        <form action="/form_handler/" method="post">
+            {% csrf_token %}
+
             <!-- Course-code Field -->
             <label for="courseCode" style="text-align: right; display: inline-block; width: 150px;">Course-code:</label>
             <input type="text" id="courseCode" name="courseCode" style="text-align: left; display: inline-block;">
