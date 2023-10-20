@@ -23,24 +23,28 @@
             {% csrf_token %}
 
             <!-- Course-code Field -->
-            <label for="courseCode" style="text-align: right; display: inline-block; width: 150px;">Course-code:</label>
+            <label for="courseCode" style="text-align: right; display: inline-block; width: 150px; margin-top: 1em;">Course-code:</label>
             <input type="text" id="courseCode" name="courseCode" style="text-align: left; display: inline-block;">
             <br>
         
             <!-- Email-address Field -->
-            <label for="emailAddress" style="text-align: right; display: inline-block; width: 150px;">Email-address:</label>
+            <label for="emailAddress" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Email-address:</label>
             <input type="email" id="emailAddress" name="emailAddress" style="text-align: left; display: inline-block;">
             <br>
         
             <!-- Submit Button -->
-            <input type="submit" value="Submit" style="display: block; margin: 2em auto 0;">
+            <!-- <input type="submit" value="Submit" style="display: block; margin: 2em auto 0;"> -->
+            <input type="submit" value="Submit" style="display: block; margin: 2em auto 0; width: 10em;">
         </form>
     </fieldset>
-    <p id="usage" style="font-style: italic;">
-            Usage: Enter a course-code in the format HIST_1234a, and enter the professor's email-address.
-            Then click the "Submit" button.
-            OCRA will be searched for reading-list data, and a downloadable file for Leganto will be prepared.
-    </p>
+    <div id="usage" style="font-style: italic; margin-top: 1.5em;">
+        <p>Usage:</p>
+        <ul>
+            <li>Enter a course-code in the format HIST_1234a, and enter the professor's email-address.</li>
+            <li>Then click the "Submit" button.</li>
+            <li>OCRA will be searched for reading-list data, and a downloadable tsv-file (tab-separated-values) for Leganto will be prepared.</li>
+        </ul>
+    </div>
 </div>
 
 
