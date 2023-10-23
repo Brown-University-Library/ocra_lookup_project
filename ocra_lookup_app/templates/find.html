@@ -7,7 +7,8 @@
 
 <div id="formbox" style="width: 600px; margin: auto; padding-top: 2em;">
     <fieldset name="Single File Upload">
-        <form action="/form_handler/" method="post">
+        <!-- <form action="/form_handler/" method="post"> -->
+        <form action="{% url 'form_handler_url' %}" method="post">
             {% csrf_token %}
 
             <!-- Course-code Field -->
