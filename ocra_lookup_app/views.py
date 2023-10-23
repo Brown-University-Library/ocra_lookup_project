@@ -56,12 +56,15 @@ def form_handler(request):
             return HttpResponseBadRequest( '400 / Bad Request' )
         form = CourseAndEmailForm( request.POST )
         if form.is_valid():
-            ## look for an existing record based on course-code and email-address
-            ci = CourseInfo.objects.filter( course_code=request.POST['course_code'], email_address=request.POST['email_address'] ).first()
+            ## look for an existing record --------------------------
+            ci = CourseInfo.objects.filter( 
+                course_code=request.POST['course_code'].lower(), 
+                email_address=request.POST['email_address'].lower() ).first()
             if ci:
                 log.debug( 'existing record found' )
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
-            else:
+            ## no existing record, so create one --------------------
+            else:  
                 log.debug( 'no existing record found' )
                 ci = CourseInfo()
                 ci.course_code = request.POST['course_code']
@@ -70,7 +73,6 @@ def form_handler(request):
                 ci.refresh_from_db()
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
             log.debug( f'redirect-url, ``{url}``' )
-            # url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
             resp = HttpResponseRedirect( url )  
         else:
             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
@@ -87,41 +89,34 @@ def form_handler(request):
 # def form_handler(request):
 #     """ Handles POST from find-form. """
 #     log.debug( 'starting form_handler()' )
-#     log.debug( f'request, ``{pprint.pformat(request)}``' )
-#     ## clear out session error text ---------------------------------
-#     log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-#     request.session['session_error_message'] = ''
-#     ## examine POST -------------------------------------------------
+#     request.session['session_error_message'] = ''  # session-errors set here
 #     try:
 #         if request.method != 'POST':
 #             log.debug( 'non-POST detected; returning bad-request' )
 #             return HttpResponseBadRequest( '400 / Bad Request' )
-#         log.debug( 'POST detected' )
-#         log.debug( f'request.POST, ``{pprint.pformat(request.POST)}``' )
-#         ## handle form ------------------------------------------
-#         log.debug( 'about to instantiate form' )
-#         # form = UploadFileForm(request.POST, request.FILES)
 #         form = CourseAndEmailForm( request.POST )
-#         log.debug( f'form.__dict__, ``{pprint.pformat(form.__dict__)}``' )
 #         if form.is_valid():
-#             log.debug( 'form is valid' )
-#             log.debug( f'form.cleaned_data, ``{pprint.pformat(form.cleaned_data)}``' )
-#             log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-#             log.debug( 'setting redirect to results' )
-#             resp = HttpResponseRedirect( reverse('results_url') )  
+#             ## look for an existing record based on course-code and email-address
+#             ci = CourseInfo.objects.filter( course_code=request.POST['course_code'], email_address=request.POST['email_address'] ).first()
+#             if ci:
+#                 log.debug( 'existing record found' )
+#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+#             else:
+#                 log.debug( 'no existing record found' )
+#                 ci = CourseInfo()
+#                 ci.course_code = request.POST['course_code']
+#                 ci.email_address = request.POST['email_address']
+#                 ci.save()
+#                 ci.refresh_from_db()
+#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+#             log.debug( f'redirect-url, ``{url}``' )
+#             # url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
+#             resp = HttpResponseRedirect( url )  
 #         else:
-#             log.debug( 'form not valid' )
-#             log.debug( f'form.errors, ``{pprint.pformat(form.errors)}``' )
-#             errors_html: str = form.errors.as_ul()
-#             log.debug( f'errors_html, ``{pprint.pformat(errors_html)}``' )
 #             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
 #             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
-#             request.session['session_error_message'] = errors_html
-#             log.debug( 'setting redirect back to find-form' )
+#             request.session['session_error_message'] = form.errors.as_ul()          # for display back in find-form
 #             resp = HttpResponseRedirect( reverse('find_url') )
-#         log.debug( 'POST handled, about to redirect' )
-#         log.debug( f'at end of POST; request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
-#         log.debug( f'at end of POST; request.session["session_error_message"], ``{pprint.pformat(request.session["session_error_message"])}``' )
 #     except Exception as e:
 #         log.exception( 'problem in uploader()...' )
 #         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
