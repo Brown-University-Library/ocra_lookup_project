@@ -1,6 +1,7 @@
 import datetime, json, logging, pprint
 
 import trio
+from .forms import CourseAndEmailForm
 from django.conf import settings as project_settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import render
@@ -9,7 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from ocra_lookup_app.lib import find_view_helper
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
-from .forms import CourseAndEmailForm
+from ocra_lookup_app.models import CourseInfo
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +56,21 @@ def form_handler(request):
             return HttpResponseBadRequest( '400 / Bad Request' )
         form = CourseAndEmailForm( request.POST )
         if form.is_valid():
-            url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
+            ## look for an existing record based on course-code and email-address
+            ci = CourseInfo.objects.filter( course_code=request.POST['course_code'], email_address=request.POST['email_address'] ).first()
+            if ci:
+                log.debug( 'existing record found' )
+                url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+            else:
+                log.debug( 'no existing record found' )
+                ci = CourseInfo()
+                ci.course_code = request.POST['course_code']
+                ci.email_address = request.POST['email_address']
+                ci.save()
+                ci.refresh_from_db()
+                url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+            log.debug( f'redirect-url, ``{url}``' )
+            # url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
             resp = HttpResponseRedirect( url )  
         else:
             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
