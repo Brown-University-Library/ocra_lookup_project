@@ -129,7 +129,7 @@ def form_handler(request):
 #     ## end def form_handler()
 
 
-def results(request):
+def results( request, the_uuid ):
     return HttpResponse( 'results coming' )
 
 
