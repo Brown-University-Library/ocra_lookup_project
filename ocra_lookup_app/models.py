@@ -1,5 +1,9 @@
+import json, logging, uuid
+
+from django.core.exceptions import ValidationError
 from django.db import models
-import uuid
+
+log = logging.getLogger(__name__)
 
 
 class CourseInfo( models.Model ):
@@ -20,3 +24,18 @@ class CourseInfo( models.Model ):
         uuid_segment: str = '%s...' % str(self.uuid)[:8]
         display: str = f'{self.course_code}--{uuid_segment}'
         return display
+
+
+    def save(self, *args, **kwargs):
+        ## Validate that `data` field is valid JSON -----------------
+        log.debug( 'starting save()' )
+        if self.data:
+            log.debug( 'data exists' )
+            try:
+                json.loads( self.data )
+            except (TypeError, ValueError):
+                msg = "Invalid JSON data for 'data' field."
+                log.warning( f'bad data, ``{self.data}``' )
+                log.exception( msg )
+                raise ValidationError( msg )
+        super().save(*args, **kwargs)
