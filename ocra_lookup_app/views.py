@@ -3,7 +3,9 @@ import datetime, json, logging, pprint
 import trio
 from .forms import CourseAndEmailForm
 from django.conf import settings as project_settings
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -86,46 +88,22 @@ def form_handler(request):
     ## end def form_handler()
 
 
-# def form_handler(request):
-#     """ Handles POST from find-form. """
-#     log.debug( 'starting form_handler()' )
-#     request.session['session_error_message'] = ''  # session-errors set here
-#     try:
-#         if request.method != 'POST':
-#             log.debug( 'non-POST detected; returning bad-request' )
-#             return HttpResponseBadRequest( '400 / Bad Request' )
-#         form = CourseAndEmailForm( request.POST )
-#         if form.is_valid():
-#             ## look for an existing record based on course-code and email-address
-#             ci = CourseInfo.objects.filter( course_code=request.POST['course_code'], email_address=request.POST['email_address'] ).first()
-#             if ci:
-#                 log.debug( 'existing record found' )
-#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
-#             else:
-#                 log.debug( 'no existing record found' )
-#                 ci = CourseInfo()
-#                 ci.course_code = request.POST['course_code']
-#                 ci.email_address = request.POST['email_address']
-#                 ci.save()
-#                 ci.refresh_from_db()
-#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
-#             log.debug( f'redirect-url, ``{url}``' )
-#             # url = '%s?course_code=%s' % ( reverse('results_url'), request.POST['course_code'] )
-#             resp = HttpResponseRedirect( url )  
-#         else:
-#             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
-#             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
-#             request.session['session_error_message'] = form.errors.as_ul()          # for display back in find-form
-#             resp = HttpResponseRedirect( reverse('find_url') )
-#     except Exception as e:
-#         log.exception( 'problem in uploader()...' )
-#         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
-#     return resp    
-#     ## end def form_handler()
-
-
-def results( request, the_uuid ):
-    return HttpResponse( 'results coming' )
+def results(request, the_uuid):
+    """ - Checks if data is in db.
+        - If necessary, querys OCRA for data (and saves it to db).
+        - Prepares downloadable reading-list file.
+    """
+    ## use the get query for a CourseInfo.uuid ------------------
+    log.debug('starting results()')
+    log.debug(f'the_uuid, ``{the_uuid}``')
+    try:
+        ci = get_object_or_404(CourseInfo, uuid=the_uuid)
+    except ValidationError:
+        log.exception( 'problem in uuid-lookup...' )
+        return HttpResponseNotFound( '<div>404 / Not Found</div>' )
+    log.debug( f'ci, ``{pprint.pformat(ci.__dict__)}``' )
+    tmp_return_string = f'course-code, ``{ci.course_code}``; email-address, ``{ci.email_address}``'
+    return HttpResponse( f'results coming for: {tmp_return_string}' )
 
 
 # -------------------------------------------------------------------
