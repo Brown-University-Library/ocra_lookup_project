@@ -29,7 +29,8 @@ class CourseInfo( models.Model ):
 
 
     def save(self, *args, **kwargs):
-        ## Validate that `data` field is valid JSON -----------------
+        """ Validates that `data` field is valid JSON.
+            See tests.CourseInfoTest() for test-documentation. """
         log.debug( 'starting save()' )
         if self.data:
             log.debug( 'data exists' )
