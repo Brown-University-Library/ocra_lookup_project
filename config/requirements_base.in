@@ -1,4 +1,5 @@
 Django==4.2.3
+fuzzywuzzy==0.18.0
 git+https://github.com/birkin/shellvars-py.git
 pip-tools==6.13.0
 requests==2.29.0  # can't go higher, because it requires urllib3 2.x, which requires a version of open-ssl newer than the one on our servers.

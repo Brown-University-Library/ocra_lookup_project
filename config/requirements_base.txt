@@ -26,6 +26,8 @@ django==4.2.3
     # via -r ./config/requirements_base.in
 exceptiongroup==1.1.0
     # via trio
+fuzzywuzzy==0.18.0
+    # via -r ./config/requirements_base.in
 idna==3.4
     # via
     #   requests
