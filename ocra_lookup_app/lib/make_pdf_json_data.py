@@ -1,12 +1,15 @@
 """
 Queries the reserves database for past PDF file-data.
-Can be run as stand-alone file, or is also called by loaders.rebuild_pdf_data_if_necessary()
+Original script could be run as stand-alone file, or is also called by loaders.rebuild_pdf_data_if_necessary()
+TODO: update to be able to run stand-alone again.
 """
 
 import datetime, json, logging, os, pprint
 
 import pymysql
-from lib import db_stuff
+# from lib import db_stuff
+from ocra_lookup_app.lib.query_ocra import DbStuff
+
 
 PDF_SQL: str = os.environ['LGNT__PDF_SQL']
 PDF_JSON_PATH: str = os.environ['LGNT__PDF_JSON_PATH']
@@ -20,6 +23,7 @@ PDF_JSON_PATH: str = os.environ['LGNT__PDF_JSON_PATH']
 log = logging.getLogger(__name__)
 log.debug( 'logging ready' )
 
+db_stuff = DbStuff()
 
 ## get db connection ------------------------------------------------
 db_connection: pymysql.connections.Connection = db_stuff.get_db_connection()  # connection configured to return rows in dictionary format

@@ -1,4 +1,5 @@
 import logging, pprint
+from django.conf import settings
 from ocra_lookup_app.lib import loaders
 from ocra_lookup_app.lib import readings_extractor
 from ocra_lookup_app.lib import readings_processor
@@ -147,7 +148,8 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     ## --------------------------------------------------------------
 
     ## load/prep necessary data -------------------------------------
-    err: dict = loaders.rebuild_pdf_data_if_necessary( {'days': settings["PDF_OLDER_THAN_DAYS"]} )
+    # err: dict = loaders.rebuild_pdf_data_if_necessary( {'days': settings["PDF_OLDER_THAN_DAYS"]} )
+    err: dict = loaders.rebuild_pdf_data_if_necessary( {'days': settings.PDF_OLDER_THAN_DAYS} )
     if err:
         raise Exception( f'problem rebuilding pdf-json, error-logged, ``{err["err"]}``' )  
 

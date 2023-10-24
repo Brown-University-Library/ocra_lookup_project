@@ -1,4 +1,4 @@
-import datetime, logging
+import datetime, logging, pathlib
 
 from django.conf import settings
 
@@ -18,7 +18,8 @@ def rebuild_pdf_data_if_necessary( days: dict ) -> dict:
     if update:
         log.debug( 'gonna update the pdf-data -- TODO' )
         try:
-            from lib import make_pdf_json_data  # the import actually runs the code
+            # from lib import make_pdf_json_data  # the import actually runs the code
+            from ocra_lookup_app.lib import make_pdf_json_data  # the import actually runs the code
         except Exception as e:
             log.exception( 'problem running pdf-json script' )
             return_val = { 'err': repr(e) }
