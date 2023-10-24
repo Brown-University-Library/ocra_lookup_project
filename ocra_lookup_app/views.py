@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
-from ocra_lookup_app.lib import find_view_helper
+from ocra_lookup_app.lib import find_view_helper, results_view_helper
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
 from ocra_lookup_app.models import CourseInfo
@@ -102,30 +102,28 @@ def results(request, the_uuid):
         log.exception( 'problem in uuid-lookup...' )
         return HttpResponseNotFound( '<div>404 / Not Found</div>' )
     log.debug( f'ci, ``{pprint.pformat(ci.__dict__)}``' )
-    ## check if data exists in db ------------------------------
+    ## check if data exists in db -----------------------------------
     if ci.data:
         log.debug( 'data exists in db' )
-        data = json.loads( ci.data )
+        data: dict = json.loads( ci.data )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
-        context = find_view_helper.make_context( request, data )
+        context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
         return render( request, 'results.html', context )
-    ## data doesn't exist in db, so query OCRA -----------------
+    ## if data doesn't exist in db, query OCRA ----------------------
     else:
-        log.debug( 'data does not exist in db' )
-        log.debug( 'querying OCRA' )
-        data = find_view_helper.query_ocra( ci.course_code, ci.email_address )
+        log.debug( 'data does not exist in db; querying OCRA' )
+        data = results_view_helper.query_ocra( ci.course_code, ci.email_address )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
         if data:
             log.debug( 'data returned from OCRA' )
-            ci.data = json.dumps( data )
+            jsn: str = json.dumps( data )
+            ci.data = jsn  # type: ignore
             ci.save()
-            context = find_view_helper.make_context( request, data )
+            context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
             return render( request, 'results.html', context )
         else:
             log.debug( 'no data returned from OCRA' )
             return HttpResponse( 'no data returned from OCRA' )
-    tmp_return_string = f'course-code, ``{ci.course_code}``; email-address, ``{ci.email_address}``'
-    return HttpResponse( f'results coming for: {tmp_return_string}' )
 
 
 # -------------------------------------------------------------------
