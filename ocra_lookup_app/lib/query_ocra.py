@@ -1,4 +1,4 @@
-import logging, os
+import logging, pprint, os
 # import pmysql
 import pymysql.cursors
 
@@ -42,6 +42,7 @@ class QueryOcra:
     def get_ocra_instructor_email_from_classid( self, class_id: str ) -> list:
         """ Returns email address for given class_id.
             Called by...  """
+        log.debug( f'starting get_ocra_instructor_email_from_classid() with class_id, ``{class_id}``' )
         ## run query to get email address -------------------------------
         db_connection: pymysql.connections.Connection = self.db_stuff.get_db_connection()  # connection configured to return rows in dictionary format
         sql = f"SELECT classes.classid, instructors.facultyid, instructors.email FROM reserves.classes, reserves.instructors WHERE classes.facultyid = instructors.facultyid AND classid = {class_id}"
@@ -60,6 +61,88 @@ class QueryOcra:
                 emails.append( email )
         log.debug( f'emails, ``{emails}``' )
         return emails
+    
+    def make_inverted_ocra_classid_email_map( self, existing_classid_to_email_map ) -> dict:
+        """ Converts `existing_classid_to_email_map` to `inverted_ocra_classid_email_map
+            Takes a dict like:
+                {   '10638': 'person_A@brown.edu',
+                    '8271': 'person_A@brown.edu',
+                    '8500': 'person_B@brown.edu'
+                    '8845': 'person_A@brown.edu' }
+            ...and returns a dict like:
+                {   'person_A@brown.edu': '10638',
+                    'person_B@brown.edu': '8500'  }
+            Allows for multiple class_ids per email, and returns the highest (latest) class_id. 
+            Called by main() """
+        ## convert keys to integers and sort them -----------------------
+        int_keys = sorted( [int(key) for key in existing_classid_to_email_map.keys()] )
+        temp_int_dict = {}
+        for key in int_keys:
+            temp_int_dict[key] = existing_classid_to_email_map[str(key)]
+        inverted_ocra_classid_email_map = {}
+        for ( class_id_key, email_val ) in temp_int_dict.items():
+            inverted_ocra_classid_email_map[email_val] = str( class_id_key )
+        log.debug( f'inverted_ocra_classid_email_map, ``{pprint.pformat(inverted_ocra_classid_email_map)}``' )
+        return inverted_ocra_classid_email_map
+
+    def filter_article_table_results( self, all_articles_results: list ):
+        """ Takes all article results and puts them in proper buckets.
+            Called by main() """
+        assert type(all_articles_results) == list
+        log.debug( f'count of all_articles_results, ``{len(all_articles_results)}``' )
+        ( article_results, audio_results, ebook_results, excerpt_results, video_results, website_results ) = ( [], [], [], [], [], [] )
+        for result in all_articles_results:
+            if 'format' in result.keys():
+                if result['format'].strip() == 'article':
+                    article_results.append( result )
+                elif result['format'].strip() == 'audio':
+                    audio_results.append( result )
+                elif result['format'].strip() == 'ebook':
+                    ebook_results.append( result )
+                elif result['format'].strip() == 'excerpt':
+                    excerpt_results.append( result )
+                elif result['format'].strip() == 'video':
+                    video_results.append( result )
+                elif result['format'].strip() == 'website':
+                    website_results.append( result )
+                else:
+                    log.debug( f'unknown format, ``{result["format"]}``' )
+            else:   # no format
+                log.debug( f'no format, ``{result}``' )
+        log.debug( f'count of article_results, ``{len(article_results)}``' )
+        log.debug( f'count of audio_results, ``{len(audio_results)}``' )
+        log.debug( f'count of ebook_results, ``{len(ebook_results)}``' )
+        log.debug( f'count of excerpt_results, ``{len(excerpt_results)}``' )
+        log.debug( f'count of video_results, ``{len(video_results)}``' )
+        log.debug( f'count of website_results, ``{len(website_results)}``' )
+        filtered_results = {
+            'article_results': article_results,
+            'audio_results': audio_results,
+            'ebook_results': ebook_results,
+            'excerpt_results': excerpt_results,
+            'video_results': video_results,
+            'website_results': website_results }    
+        # log.debug( f'filtered_results, ``{pprint.pformat(filtered_results)}``' )
+        return filtered_results  
+    ## end def filter_article_table_results()  
+
+    def check_for_ocra_data( self, all_course_results: dict ):
+        """ Checks if there's any ocra data in the course_results.
+            all_course_results is a dict like:
+                { '1234': 
+                    {'article_results': [], 'book_results: [], etc...},
+                '2468': 
+                    {'article_results': [], 'book_results: [], etc...},
+                }
+            Called by main() """
+        assert type( all_course_results ) == dict
+        ocra_data_found_check = False
+        for ( class_id, classid_results ) in all_course_results.items():
+            for ( format, format_results ) in classid_results.items():
+                if len(format_results) > 0:
+                    ocra_data_found_check = True
+        log.debug( f'ocra_data_found_check, ``{ocra_data_found_check}``' )
+        return ocra_data_found_check
 
     ## end class QueryOcra()
 
