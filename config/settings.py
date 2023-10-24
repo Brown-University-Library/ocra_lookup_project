@@ -191,11 +191,14 @@ LOGGING = {
     }
 }
 
+# -------------------------------------------------------------------
+# app-level settings
+# -------------------------------------------------------------------
 
-## app-level settings -----------------------------------------------
 # PATTERN_LIB_HEADER_URL = os.environ['OCRA_LKP__PATTERN_LIB_HEADER_URL']
 # PATTERN_LIB_CACHE_TIMEOUT = int( os.environ['OCRA_LKP__PATTERN_LIB_CACHE_TIMEOUT_IN_HOURS'] )
 
 ## scanned-files data ---------------------------
+PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
 PDF_JSON_PATH = os.environ['OCRA_LKP__PDF_JSON_PATH']
-PDF_DATA = 'foo'
+PDF_DATA = 'WILL-BE-AUTO-POPULATED'
