@@ -1,6 +1,6 @@
 import logging
 
-from ocra_lookup_app.lib import common
+# from ocra_lookup_app.lib import common
 
 log = logging.getLogger(__name__)
 
