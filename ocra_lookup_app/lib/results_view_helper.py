@@ -1,5 +1,7 @@
 import logging, pprint
 from ocra_lookup_app.lib import readings_extractor
+from ocra_lookup_app.lib import readings_processor
+from ocra_lookup_app.lib.cdl import CDL_Checker
 from ocra_lookup_app.lib.query_ocra import QueryOcra
 
 log = logging.getLogger(__name__)
@@ -62,7 +64,6 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     ## get class_ids --------------------------------------------
     relevant_course_classids = inverted_ocra_classid_email_map.values()
     log.debug( f'relevant_course_classids, ``{pprint.pformat(relevant_course_classids)}``' )
-
     ## process relevant class_ids ------------------------------------
     all_course_results = {}
     for class_id in relevant_course_classids:
@@ -127,7 +128,6 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
             'tracks_results': tracks_results,
         }
         all_course_results[class_id] = classid_results
-
         ## end for class_id in relevant_course_classids loop...
 
     course_data_dict['ocra_course_data'] = all_course_results
@@ -141,8 +141,123 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
 
     ## end for-course loop...
 
+    ## --------------------------------------------------------------
+    ## ok next step: `50_create_reading_list`...
+    ## --------------------------------------------------------------
+
+    ## process courses ----------------------------------------------
+    all_courses_enhanced_data = []
+    # for ( i, (course_key, course_data_val) ) in enumerate( data_holder_dict.items() ):
+    for ( i, (course_key, course_data_val) ) in enumerate( course_data_dict.items() ):
+        if course_key == '__meta__':
+            continue
+        log.debug( f'processing course_key, ``{course_key}``')
+        log.debug( f'processing course_data_val, ``{pprint.pformat(course_data_val)}``')
+
+        ## get ocra data --------------------------------------------
+        ocra_course_data: dict = course_data_val['ocra_course_data']  # { 'class_id_1234': {'articles': [], 'audios': [], etc...}, 'class_id_2468': {'articles': [], 'audios': [], etc...} }
+        log.debug( f'ocra_course_data, ``{pprint.pformat(ocra_course_data)}``' )
+
+        ## combine all same-formats ---------------------------------  # cuz there could be multiple class_id results for a course
+        combined_course_data_dict = combine_course_data( ocra_course_data )
+        
+        ## prepare data for enhancements ----------------------------
+        course_id = f'%s%s' % ( course_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+        oit_course_id = course_data_val['oit_course_id']
+        cdl_checker = CDL_Checker()
+        oit_section_id = 'S01'
+        oit_title = course_data_val['oit_course_title']
+
+        ## enhance articles -----------------------------------------
+        combined_articles = combined_course_data_dict['ocra_articles']
+        # enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+
+        ## enhance audios -------------------------------------------
+        combined_audios = combined_course_data_dict['ocra_audios']
+        # enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title )
+
+        ## enhance books --------------------------------------------
+        combined_books = combined_course_data_dict['ocra_books']
+        enhanced_books: list = readings_processor.map_books( combined_books, oit_course_id, oit_section_id, oit_title, cdl_checker )
+
+        ## enhance ebooks -------------------------------------------
+        combined_ebooks = combined_course_data_dict['ocra_ebooks']
+        # enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+
+        ## enhance excerpts -----------------------------------------
+        combined_excerpts = combined_course_data_dict['ocra_excerpts']
+        # enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+
+        ## enhance tracks -------------------------------------------
+        combined_tracks = combined_course_data_dict['ocra_tracks']
+        enhanced_tracks: list = readings_processor.map_tracks( combined_tracks, course_id, oit_course_id, oit_section_id, oit_title )
+
+        ## enhance videos -------------------------------------------
+        combined_videos = combined_course_data_dict['ocra_videos']
+        # enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title )
+
+        ## enhance websites -----------------------------------------
+        combined_websites = combined_course_data_dict['ocra_websites']
+        # enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+        enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, )
+
+        ## combine data ---------------------------------------------
+        course_enhanced_data: list = enhanced_articles + enhanced_audios + enhanced_books + enhanced_ebooks + enhanced_excerpts + enhanced_tracks + enhanced_videos + enhanced_websites
+        all_courses_enhanced_data = all_courses_enhanced_data + course_enhanced_data
+
+        # if i > 2:
+        #     break
+
+        # end for-course loop...
+
+    ## apply final leganto processing -------------------------------
+    leganto_data: list = prep_leganto_data( all_courses_enhanced_data, settings )
+
+
+
 
     return {}
+
+
+def combine_course_data( ocra_course_data ) -> dict:
+    """ Better organizes extracted data.
+        Called by query_ocra() """
+    combined_articles = []
+    combined_audios = []
+    combined_books = []
+    combined_ebooks = []
+    combined_excerpts = []
+    combined_tracks = []
+    combined_videos = []
+    combined_websites = []
+    for class_id_key, results_dict_val in ocra_course_data.items():
+        log.debug( f'class_id_key, ``{class_id_key}``' )
+        log.debug( f'results_dict_val, ``{pprint.pformat(results_dict_val)}``' )
+        combined_articles += results_dict_val['article_results']
+        combined_audios += results_dict_val['audio_results']
+        combined_books += results_dict_val['book_results']
+        combined_ebooks += results_dict_val['ebook_results']
+        combined_excerpts += results_dict_val['excerpt_results']
+        combined_tracks += results_dict_val['tracks_results']
+        combined_videos += results_dict_val['video_results']
+        combined_websites += results_dict_val['website_results']
+    course_data_dict = {
+        'ocra_articles': combined_articles,
+        'ocra_audios': combined_audios,
+        'ocra_books': combined_books,
+        'ocra_ebooks': combined_ebooks,
+        'ocra_excerpts': combined_excerpts,
+        'ocra_tracks': combined_tracks,
+        'ocra_videos': combined_videos,
+        'ocra_websites': combined_websites,
+        }
+    log.debug( f'course_data_dict, ``{pprint.pformat(course_data_dict)}``' )
+    return course_data_dict
 
 
 def make_context( request, course_code: str, email_address: str, data: dict ) -> dict:
