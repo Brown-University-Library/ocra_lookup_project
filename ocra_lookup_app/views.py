@@ -112,7 +112,7 @@ def results(request, the_uuid):
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        data = results_view_helper.query_ocra( ci.course_code, ci.email_address )
+        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
         if data:
             log.debug( 'data returned from OCRA' )

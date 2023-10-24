@@ -9,7 +9,7 @@ from ocra_lookup_app.lib.query_ocra import QueryOcra
 log = logging.getLogger(__name__)
 
 
-def query_ocra( course_code: str, email_address: str ) -> dict:
+def query_ocra( course_code: str, email_address: str, year: str, term: str ) -> dict:
     """ Queries OCRA on course_code ("HIST_1234") and email_address. 
         Called by views.results()"""
     log.debug( 'starting query_ocra()' )
@@ -142,6 +142,15 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     log.debug( f'course_data_dict, ``{pprint.pformat(course_data_dict)}``' )
     log.debug( f' course_data_dict keys, ``{list(course_data_dict.keys())}``' )
 
+    ## update data-holder for use in next step ----------------------
+    updated_key = f'{dept}.{number}'
+    log.debug( f'updated_key, ``{updated_key}``' )
+    updated_data_holder_dict[updated_key] = course_data_dict
+    # log.debug( f'updated_data_holder_dict, ``{pprint.pformat(updated_data_holder_dict)[0:500]}``' )
+    log.debug( f'updated_data_holder_dict, ``{pprint.pformat(updated_data_holder_dict)[:500]}``' )
+
+
+
     ## end for-course loop...
 
     ## --------------------------------------------------------------
@@ -157,67 +166,68 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     ## process courses ----------------------------------------------
     all_courses_enhanced_data = []
     # for ( i, (course_key, course_data_val) ) in enumerate( data_holder_dict.items() ):
-    for ( i, (course_key, course_data_val) ) in enumerate( course_data_dict.items() ):
-        if course_key == '__meta__':
-            continue
-        log.debug( f'processing course_key, ``{course_key}``')
-        log.debug( f'processing course_data_val, ``{pprint.pformat(course_data_val)}``')
+    #     if course_key == '__meta__':
+    #         continue
+    #     log.debug( f'processing course_key, ``{course_key}``')
+    #     log.debug( f'processing course_data_val, ``{pprint.pformat(course_data_val)}``')
 
-        ## get ocra data --------------------------------------------
-        ocra_course_data: dict = course_data_val['ocra_course_data']  # { 'class_id_1234': {'articles': [], 'audios': [], etc...}, 'class_id_2468': {'articles': [], 'audios': [], etc...} }
-        log.debug( f'ocra_course_data, ``{pprint.pformat(ocra_course_data)}``' )
+    ## get ocra data --------------------------------------------
+    # ocra_course_data: dict = course_data_val['ocra_course_data']  # { 'class_id_1234': {'articles': [], 'audios': [], etc...}, 'class_id_2468': {'articles': [], 'audios': [], etc...} }
+    ocra_course_data: dict = course_data_dict['ocra_course_data']  # { 'class_id_1234': {'articles': [], 'audios': [], etc...}, 'class_id_2468': {'articles': [], 'audios': [], etc...} }
+    log.debug( f'ocra_course_data, ``{pprint.pformat(ocra_course_data)}``' )
 
-        ## combine all same-formats ---------------------------------  # cuz there could be multiple class_id results for a course
-        combined_course_data_dict = combine_course_data( ocra_course_data )
-        
-        ## prepare data for enhancements ----------------------------
-        course_id = f'%s%s' % ( course_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
-        oit_course_id = course_data_val['oit_course_id']
-        cdl_checker = CDL_Checker()
-        oit_section_id = 'S01'
-        oit_title = course_data_val['oit_course_title']
+    ## combine all same-formats ---------------------------------  # cuz there could be multiple class_id results for a course
+    combined_course_data_dict = combine_course_data( ocra_course_data )
+    
+    ## prepare data for enhancements ----------------------------
+    # course_id = f'%s%s' % ( course_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+    course_id = f'%s%s' % ( updated_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+    oit_course_id = course_data_val['oit_course_id']
+    cdl_checker = CDL_Checker()
+    oit_section_id = 'S01'
+    oit_title = course_data_val['oit_course_title']
 
-        ## enhance articles -----------------------------------------
-        combined_articles = combined_course_data_dict['ocra_articles']
-        # enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+    ## enhance articles -----------------------------------------
+    combined_articles = combined_course_data_dict['ocra_articles']
+    # enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_articles = readings_processor.map_articles( combined_articles, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
 
-        ## enhance audios -------------------------------------------
-        combined_audios = combined_course_data_dict['ocra_audios']
-        # enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title )
+    ## enhance audios -------------------------------------------
+    combined_audios = combined_course_data_dict['ocra_audios']
+    # enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_audios: list = readings_processor.map_audio_files( combined_audios, oit_course_id, cdl_checker, oit_section_id, oit_title )
 
-        ## enhance books --------------------------------------------
-        combined_books = combined_course_data_dict['ocra_books']
-        enhanced_books: list = readings_processor.map_books( combined_books, oit_course_id, oit_section_id, oit_title, cdl_checker )
+    ## enhance books --------------------------------------------
+    combined_books = combined_course_data_dict['ocra_books']
+    enhanced_books: list = readings_processor.map_books( combined_books, oit_course_id, oit_section_id, oit_title, cdl_checker )
 
-        ## enhance ebooks -------------------------------------------
-        combined_ebooks = combined_course_data_dict['ocra_ebooks']
-        # enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+    ## enhance ebooks -------------------------------------------
+    combined_ebooks = combined_course_data_dict['ocra_ebooks']
+    # enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_ebooks: list = readings_processor.map_ebooks( combined_ebooks, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
 
-        ## enhance excerpts -----------------------------------------
-        combined_excerpts = combined_course_data_dict['ocra_excerpts']
-        # enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
+    ## enhance excerpts -----------------------------------------
+    combined_excerpts = combined_course_data_dict['ocra_excerpts']
+    # enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_excerpts: list = readings_processor.map_excerpts( combined_excerpts, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title )
 
-        ## enhance tracks -------------------------------------------
-        combined_tracks = combined_course_data_dict['ocra_tracks']
-        enhanced_tracks: list = readings_processor.map_tracks( combined_tracks, course_id, oit_course_id, oit_section_id, oit_title )
+    ## enhance tracks -------------------------------------------
+    combined_tracks = combined_course_data_dict['ocra_tracks']
+    enhanced_tracks: list = readings_processor.map_tracks( combined_tracks, course_id, oit_course_id, oit_section_id, oit_title )
 
-        ## enhance videos -------------------------------------------
-        combined_videos = combined_course_data_dict['ocra_videos']
-        # enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title )
+    ## enhance videos -------------------------------------------
+    combined_videos = combined_course_data_dict['ocra_videos']
+    # enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_videos: list = readings_processor.map_videos( combined_videos, oit_course_id, cdl_checker, oit_section_id, oit_title )
 
-        ## enhance websites -----------------------------------------
-        combined_websites = combined_course_data_dict['ocra_websites']
-        # enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
-        enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, )
+    ## enhance websites -----------------------------------------
+    combined_websites = combined_course_data_dict['ocra_websites']
+    # enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, settings )
+    enhanced_websites: list = readings_processor.map_websites( combined_websites, course_id, oit_course_id, cdl_checker, oit_section_id, oit_title, )
 
-        ## combine data ---------------------------------------------
-        course_enhanced_data: list = enhanced_articles + enhanced_audios + enhanced_books + enhanced_ebooks + enhanced_excerpts + enhanced_tracks + enhanced_videos + enhanced_websites
-        all_courses_enhanced_data = all_courses_enhanced_data + course_enhanced_data
+    ## combine data ---------------------------------------------
+    course_enhanced_data: list = enhanced_articles + enhanced_audios + enhanced_books + enhanced_ebooks + enhanced_excerpts + enhanced_tracks + enhanced_videos + enhanced_websites
+    all_courses_enhanced_data = all_courses_enhanced_data + course_enhanced_data
 
         # if i > 2:
         #     break
