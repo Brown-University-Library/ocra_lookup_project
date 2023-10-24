@@ -8,11 +8,15 @@ import datetime, json, logging, os, pprint
 
 import pymysql
 # from lib import db_stuff
+from django.conf import settings
 from ocra_lookup_app.lib.query_ocra import DbStuff
 
 
-PDF_SQL: str = os.environ['LGNT__PDF_SQL']
-PDF_JSON_PATH: str = os.environ['LGNT__PDF_JSON_PATH']
+# PDF_SQL: str = os.environ['LGNT__PDF_SQL']
+PDF_SQL: str = settings.PDF_SQL
+# PDF_JSON_PATH: str = os.environ['LGNT__PDF_JSON_PATH']
+PDF_JSON_PATH: str = settings.PDF_JSON_PATH
+
 # LOG_PATH: str = os.environ['LGNT__LOG_PATH']
 
 # logging.basicConfig(
