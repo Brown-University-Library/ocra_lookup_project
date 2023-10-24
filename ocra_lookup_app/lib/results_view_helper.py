@@ -140,6 +140,7 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     course_data_dict['status'] = 'processed'
 
     log.debug( f'course_data_dict, ``{pprint.pformat(course_data_dict)}``' )
+    log.debug( f' course_data_dict keys, ``{list(course_data_dict.keys())}``' )
 
     ## end for-course loop...
 
