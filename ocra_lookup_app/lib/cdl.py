@@ -7,12 +7,12 @@ from ocra_lookup_app.lib.query_ocra import DbStuff
 db_stuff = DbStuff()
 
 
-LOG_PATH: str = os.environ['LGNT__LOG_PATH']
-logging.basicConfig(
-    filename=LOG_PATH,
-    level=logging.DEBUG,
-    format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
-    datefmt='%d/%b/%Y %H:%M:%S' )
+# LOG_PATH: str = os.environ['LGNT__LOG_PATH']
+# logging.basicConfig(
+#     filename=LOG_PATH,
+#     level=logging.DEBUG,
+#     format='[%(asctime)s] %(levelname)s [%(module)s-%(funcName)s()::%(lineno)d] %(message)s',
+#     datefmt='%d/%b/%Y %H:%M:%S' )
 log = logging.getLogger(__name__)
 
 

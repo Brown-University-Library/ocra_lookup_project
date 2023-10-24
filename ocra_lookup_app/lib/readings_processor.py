@@ -2,6 +2,7 @@ import logging, os, pprint
 import urllib.parse
 
 # from lib import cdl
+from django.conf import settings
 from ocra_lookup_app.lib import cdl
 
 

@@ -1,4 +1,5 @@
 import logging, pprint
+from ocra_lookup_app.lib import loaders
 from ocra_lookup_app.lib import readings_extractor
 from ocra_lookup_app.lib import readings_processor
 from ocra_lookup_app.lib.cdl import CDL_Checker
@@ -144,6 +145,11 @@ def query_ocra( course_code: str, email_address: str ) -> dict:
     ## --------------------------------------------------------------
     ## ok next step: `50_create_reading_list`...
     ## --------------------------------------------------------------
+
+    ## load/prep necessary data -------------------------------------
+    err: dict = loaders.rebuild_pdf_data_if_necessary( {'days': settings["PDF_OLDER_THAN_DAYS"]} )
+    if err:
+        raise Exception( f'problem rebuilding pdf-json, error-logged, ``{err["err"]}``' )  
 
     ## process courses ----------------------------------------------
     all_courses_enhanced_data = []
