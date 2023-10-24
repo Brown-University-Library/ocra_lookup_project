@@ -11,18 +11,24 @@ log = logging.getLogger(__name__)
 class CourseAndEmailForm( forms.Form) :
     course_code = forms.CharField( label='Course Code', max_length=20 )
     email_address = forms.EmailField( label='Email Address' )
+    year = forms.CharField( label='Year', max_length=4, required=True )    
+    TERM_CHOICES = [
+        ('fall', 'Fall'),
+        ('spring', 'Spring'),
+        ('summer', 'Summer'),
+    ]
+    term = forms.ChoiceField(label='Term', choices=TERM_CHOICES, required=True)
 
     def clean_course_code(self):
         course_code = self.cleaned_data.get( 'course_code' )
         ## Check if course_code is empty ----------------------------
         if not course_code:
             raise forms.ValidationError( 'Course code cannot be empty.' )
-        ## Check if course_code contains more than one underscore ---
+        ## Ensure course_code contains an underscore -----------------
         if course_code.count('_') != 1:
             raise forms.ValidationError( 'Course code should contain exactly one underscore.' )
-        ## Split course_code into course_department and course_number
-        course_department, course_number = course_code.split( '_' )
         ## Check that neither part is empty -------------------------
+        course_department, course_number = course_code.split( '_' )
         if not course_department or not course_number:
             raise forms.ValidationError( 'Both course-department and course-number should be non-empty.' )
         return course_code
@@ -33,5 +39,19 @@ class CourseAndEmailForm( forms.Form) :
         if not email_address:
             raise forms.ValidationError( 'Email address cannot be empty.' )
         return email_address
+    
+    def clean_year(self):
+        year = self.cleaned_data.get('year')
+        # Check if year is empty ----------------------------
+        if not year:
+            raise forms.ValidationError( 'Year cannot be empty.' )
+        return year
+
+    def clean_term(self):
+        term = self.cleaned_data.get('term')
+        # Check if term is empty ----------------------------
+        if term not in ['fall', 'spring', 'summer']:
+            raise forms.ValidationError( 'Term cannot be empty.' )
+        return term
 
     ## end CourseAndEmailForm()

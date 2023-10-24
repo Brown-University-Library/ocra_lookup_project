@@ -1,7 +1,7 @@
 import datetime, json, logging, pprint
 
 import trio
-from .forms import CourseAndEmailForm
+# from .forms import CourseAndEmailForm
 from django.conf import settings as project_settings
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
+from ocra_lookup_app.forms import CourseAndEmailForm 
 from ocra_lookup_app.lib import find_view_helper, results_view_helper
 from ocra_lookup_app.lib import version_helper
 from ocra_lookup_app.lib.version_helper import GatherCommitAndBranchData
@@ -29,23 +30,58 @@ def info(request):
 @ensure_csrf_cookie
 def find(request):
     """ Handles GET to find-form. """
-    log.debug( 'starting find()' )
-    log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-    log.debug( f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
+    log.debug('starting find()')
+    log.debug(f'request.session.items(), ``{pprint.pformat(request.session.items())}``')
+    log.debug(f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``')
+    ## Initialize context and form ----------------------------------
     context = {}
-    if 'course_code_value' in list( request.session.keys() ):
+    initial_data = {}
+    ## Ppopulate initial_data ---------------------------------------
+    if 'course_code_value' in request.session.keys():
+        initial_data['course_code'] = request.session['course_code_value']
         context['course_code_value'] = request.session['course_code_value']
     if 'email_address_value' in request.session.keys():
+        initial_data['email_address'] = request.session['email_address_value']
         context['email_address_value'] = request.session['email_address_value']
+    if 'term_value' in request.session.keys():  # Add this if you want to pre-fill the term field
+        initial_data['term'] = request.session['term_value']
+    ## Create form instance with initial data -----------------------
+    form = CourseAndEmailForm(initial=initial_data)
+    ## Add form to context ------------------------------------------
+    context['form'] = form
+    ## Check for error messages in session -
     if 'session_error_message' in request.session.keys():
         errors_html = request.session['session_error_message']
         context['errors_html'] = errors_html
-    log.debug( f'context, ``{context}``' )
+    log.debug(f'context, ``{context}``')
+    ## Clear session values -----------------------------------------
     request.session['course_code_value'] = ''
     request.session['email_address_value'] = ''
     request.session['session_error_message'] = ''
-    log.debug( f'context, ``{context}``' )
-    return render( request, 'find.html', context )
+    log.debug(f'context, ``{context}``')
+    return render(request, 'find.html', context)
+    ## end def find()
+
+# @ensure_csrf_cookie
+# def find(request):
+#     """ Handles GET to find-form. """
+#     log.debug( 'starting find()' )
+#     log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
+#     log.debug( f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``' )
+#     context = {}
+#     if 'course_code_value' in list( request.session.keys() ):
+#         context['course_code_value'] = request.session['course_code_value']
+#     if 'email_address_value' in request.session.keys():
+#         context['email_address_value'] = request.session['email_address_value']
+#     if 'session_error_message' in request.session.keys():
+#         errors_html = request.session['session_error_message']
+#         context['errors_html'] = errors_html
+#     log.debug( f'context, ``{context}``' )
+#     request.session['course_code_value'] = ''
+#     request.session['email_address_value'] = ''
+#     request.session['session_error_message'] = ''
+#     log.debug( f'context, ``{context}``' )
+#     return render( request, 'find.html', context )
 
 
 def form_handler(request):
@@ -71,6 +107,8 @@ def form_handler(request):
                 ci = CourseInfo()
                 ci.course_code = request.POST['course_code']
                 ci.email_address = request.POST['email_address']
+                ci.year = request.POST['year']
+                ci.term = request.POST['term']
                 ci.save()
                 ci.refresh_from_db()
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )

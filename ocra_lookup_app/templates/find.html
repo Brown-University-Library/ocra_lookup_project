@@ -25,10 +25,10 @@
             <label for="year" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Year:</label>
             <input type="text" id="year" name="year" style="text-align: left; display: inline-block; width: 10em;" value="{{ year_value }}">
             <br>
-            
+
             <!-- Term Field -->
             <label for="term" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Term:</label>
-            <input type="text" id="term" name="term" style="text-align: left; display: inline-block; width: 10em;" value="{{ term_value }}">
+            {{ form.term }}
             <br>
 
             {% if errors_html %}

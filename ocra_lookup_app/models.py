@@ -13,8 +13,10 @@ class CourseInfo( models.Model ):
         unique=True, 
         primary_key=True,
         )
-    course_code = models.CharField(max_length=20)
+    course_code = models.CharField( max_length=20 )
     email_address = models.EmailField()
+    year = models.CharField( max_length=4, default='YEAR' )
+    term = models.CharField (max_length=10, default='TERM' )
     ## Note: this JSONField doesn't really do much for our servers, but if in the future they're compiled to use a JSONField, this could be useful.
     ## Note2: the JSONField doesn't auto-validate the data, hence the save() override.
     data = models.JSONField(
