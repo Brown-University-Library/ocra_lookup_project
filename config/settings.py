@@ -199,6 +199,7 @@ LOGGING = {
 # PATTERN_LIB_CACHE_TIMEOUT = int( os.environ['OCRA_LKP__PATTERN_LIB_CACHE_TIMEOUT_IN_HOURS'] )
 
 ## scanned-files data ---------------------------
-PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
-PDF_JSON_PATH = os.environ['OCRA_LKP__PDF_JSON_PATH']
 PDF_DATA = 'WILL-BE-AUTO-POPULATED'
+PDF_JSON_PATH = os.environ['OCRA_LKP__PDF_JSON_PATH']
+PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
+PDF_SQL = os.environ['OCRA_LKP__PDF_SQL']
