@@ -18,10 +18,14 @@ class CourseAndEmailForm( forms.Form) :
         ('summer', 'Summer'),
     ]
     term = forms.ChoiceField(label='Term', choices=TERM_CHOICES, required=True)
-    course_title = forms.CharField( label='Course Title', max_length=100, required=True, initial='Course Title' ) 
-
-    # def return_current_year(self) -> str:
-    #     return str( datetime.datetime.now().year )
+    # course_title = forms.CharField( label='Course Title', max_length=100, required=True, initial='Course Title' ) 
+    course_title = forms.CharField( 
+        label='Course Title', 
+        max_length=100, 
+        required=True, 
+        initial='TITLE',
+        widget=forms.TextInput( attrs={'style': 'width:25em;'} ) 
+        )
 
     def clean_course_code(self):
         course_code = self.cleaned_data.get( 'course_code' )

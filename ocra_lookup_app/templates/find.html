@@ -31,6 +31,12 @@
             {{ form.term }}
             <br>
 
+            <!-- Course-Title Field -->
+            <label for="course_title" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Course Title:</label>
+            {{ form.course_title }}
+            <br>
+
+
             {% if errors_html %}
                 <div style="color: red; margin-top: 1em; margin-left: 3em; font-size: small;">Errors:
                     {{ errors_html|safe  }}
@@ -49,7 +55,8 @@
             <li style="margin-bottom: 0.5em;">Enter a course-code in the format "HIST_1234a" (no quotes).</li>
             <li style="margin-bottom: 0.5em;">Enter the professor's email-address.</li>
             <li style="margin-bottom: 0.5em;">Enter the 4-digit year that will be part of the Leganto course-code.</li>
-            <li style="margin-bottom: 0.5em;">Enter the term that will be part of the Leganto course-code. Options: "fall" or "spring" or "summer".</li>
+            <li style="margin-bottom: 0.5em;">Enter the term that will be part of the Leganto course-code.</li>
+            <li style="margin-bottom: 0.5em;">Enter the title for the course, for the Leganto reading-list file.</li>
             <li style="margin-bottom: 0.5em;">Then click the "Submit" button.</li>
             <li style="margin-bottom: 0.5em;">OCRA will be searched for reading-list data, and a downloadable tsv-file (tab-separated-values) for Leganto will be prepared.</li>
         </ul>
