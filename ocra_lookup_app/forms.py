@@ -9,16 +9,26 @@ log = logging.getLogger(__name__)
 
 
 class CourseAndEmailForm( forms.Form) :
-    course_code = forms.CharField( label='Course Code', max_length=20, initial='ABCD_1234' )
+    course_code = forms.CharField( 
+        label='Course Code', 
+        max_length=20, 
+        initial='ABCD_1234',
+        widget=forms.TextInput( attrs={'style': 'width:10em;'} )
+        )
     email_address = forms.EmailField( label='Email Address' )
-    year = forms.CharField( label='Year', max_length=4, required=True, initial=str(datetime.datetime.now().year) )
+    year = forms.CharField( 
+        label='Year', 
+        max_length=4, 
+        required=True, 
+        initial=str(datetime.datetime.now().year),
+        widget=forms.TextInput( attrs={'style': 'width:10em;'} ) 
+        )
     TERM_CHOICES = [
         ('fall', 'Fall'),
         ('spring', 'Spring'),
         ('summer', 'Summer'),
     ]
     term = forms.ChoiceField(label='Term', choices=TERM_CHOICES, required=True)
-    # course_title = forms.CharField( label='Course Title', max_length=100, required=True, initial='Course Title' ) 
     course_title = forms.CharField( 
         label='Course Title', 
         max_length=100, 
