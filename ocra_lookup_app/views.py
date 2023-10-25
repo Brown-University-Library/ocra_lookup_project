@@ -109,6 +109,7 @@ def form_handler(request):
                 ci.email_address = request.POST['email_address']
                 ci.year = request.POST['year']
                 ci.term = request.POST['term']
+                ci.course_title = request.POST['course_title']
                 ci.save()
                 ci.refresh_from_db()
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
@@ -150,7 +151,7 @@ def results(request, the_uuid):
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term )
+        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.title )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
         if data:
             log.debug( 'data returned from OCRA' )

@@ -1,4 +1,4 @@
-import logging
+import datetime, logging
 
 from django import forms
 # from django.conf import settings
@@ -9,15 +9,19 @@ log = logging.getLogger(__name__)
 
 
 class CourseAndEmailForm( forms.Form) :
-    course_code = forms.CharField( label='Course Code', max_length=20 )
+    course_code = forms.CharField( label='Course Code', max_length=20, initial='ABCD_1234' )
     email_address = forms.EmailField( label='Email Address' )
-    year = forms.CharField( label='Year', max_length=4, required=True )    
+    year = forms.CharField( label='Year', max_length=4, required=True, initial=str(datetime.datetime.now().year) )
     TERM_CHOICES = [
         ('fall', 'Fall'),
         ('spring', 'Spring'),
         ('summer', 'Summer'),
     ]
     term = forms.ChoiceField(label='Term', choices=TERM_CHOICES, required=True)
+    course_title = forms.CharField( label='Course Title', max_length=100, required=True, initial='Course Title' ) 
+
+    # def return_current_year(self) -> str:
+    #     return str( datetime.datetime.now().year )
 
     def clean_course_code(self):
         course_code = self.cleaned_data.get( 'course_code' )

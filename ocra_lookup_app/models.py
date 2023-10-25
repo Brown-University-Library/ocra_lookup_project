@@ -17,6 +17,7 @@ class CourseInfo( models.Model ):
     email_address = models.EmailField()
     year = models.CharField( max_length=4, default='YEAR' )
     term = models.CharField (max_length=10, default='TERM' )
+    course_title = models.CharField (max_length=100, default='TITLE' )
     ## Note: this JSONField doesn't really do much for our servers, but if in the future they're compiled to use a JSONField, this could be useful.
     ## Note2: the JSONField doesn't auto-validate the data, hence the save() override.
     data = models.JSONField(

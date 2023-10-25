@@ -9,7 +9,7 @@ from ocra_lookup_app.lib.query_ocra import QueryOcra
 log = logging.getLogger(__name__)
 
 
-def query_ocra( course_code: str, email_address: str, year: str, term: str ) -> dict:
+def query_ocra( course_code: str, email_address: str, ci_year: str, ci_term: str, ci_title: str ) -> dict:
     """ Queries OCRA on course_code ("HIST_1234") and email_address. 
         Called by views.results()"""
     log.debug( 'starting query_ocra()' )
@@ -181,8 +181,10 @@ def query_ocra( course_code: str, email_address: str, year: str, term: str ) -> 
     
     ## prepare data for enhancements ----------------------------
     # course_id = f'%s%s' % ( course_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
-    course_id = f'%s%s' % ( updated_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
-    oit_course_id = course_data_val['oit_course_id']
+    course_id = f'%s%s' % ( updated_key.split('.')[0].upper(), updated_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+    # oit_course_id = course_data_val['oit_course_id']
+    oit_course_id = f'brown.{course_id}.{ci_year}-{ci_term}.s01'  # e.g., 'brown.musc.1663.2023-fall.s01'
+    log.debug( f'oit_course_id, ``{oit_course_id}``' )
     cdl_checker = CDL_Checker()
     oit_section_id = 'S01'
     oit_title = course_data_val['oit_course_title']
