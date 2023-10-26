@@ -8,10 +8,13 @@
 <div id="formbox" style="width: 600px; margin: auto; padding-top: 2em;">
     <fieldset name="Single File Upload">
         <!-- <form action="/form_handler/" method="post"> -->
-        <form action="{% url 'form_handler_url' %}" method="post">
+        <form action="{% url 'find_url' %}" method="post">
             {% csrf_token %}
         
+            {{ form.non_field_errors }}
+
             <!-- Course-code Field -->
+            {{ form.course_code.errors }}
             <label for="course_code" style="text-align: right; display: inline-block; width: 150px; margin-top: 1em;">Course-code:</label>
             {{ form.course_code }}
             <br>

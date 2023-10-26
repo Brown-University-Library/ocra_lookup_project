@@ -7,7 +7,7 @@ urlpatterns = [
     ## main ---------------------------------------------------------
     path( 'info/', views.info, name='info_url' ),
     path( 'find/', views.find, name='find_url' ),
-    path( 'form_handler/', views.form_handler, name='form_handler_url' ),
+    # path( 'form_handler/', views.form_handler, name='form_handler_url' ),
     # path( 'results/', views.results, name='results_url' ),
     path( 'results/<the_uuid>/', views.results, name='results_url' ),
 

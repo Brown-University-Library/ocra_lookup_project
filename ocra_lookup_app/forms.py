@@ -12,10 +12,13 @@ class CourseAndEmailForm( forms.Form) :
     course_code = forms.CharField( 
         label='Course Code', 
         max_length=20, 
+        required=True,
         initial='ABCD_1234',
         widget=forms.TextInput( attrs={'style': 'width:10em;'} )
         )
-    email_address = forms.EmailField( label='Email Address' )
+    email_address = forms.EmailField( 
+        label='Email Address' 
+        )
     year = forms.CharField( 
         label='Year', 
         max_length=4, 
