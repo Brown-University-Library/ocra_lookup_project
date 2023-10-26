@@ -2,10 +2,20 @@
 
 {% block extra_head %}
 <style>
+
+    /* The errorlist class doesn't appear in this file; it's auto-created when necessary by the `form` object. */
     .errorlist li {
       color: red;
     }
-  </style>  
+
+    label {
+        text-align: right;
+        display: inline-block;
+        width: 150px;
+        margin-top: .5em;
+    }
+
+</style>  
 {% endblock %}
 
 {% block header %}
@@ -14,6 +24,7 @@
 {% block content %}
 
 <div id="formbox" style="width: 600px; margin: auto; padding-top: 2em;">
+
     <fieldset name="Single File Upload">
         <!-- <form action="/form_handler/" method="post"> -->
         <form action="{% url 'find_url' %}" method="post">
@@ -34,7 +45,8 @@
             <br>
 
             <!-- Year Field -->
-            <label for="year" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Year:</label>
+            <!-- <label for="year" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Year:</label> -->
+            {{ form.year.label_tag }}
             {{ form.year }}
             <br>
             
@@ -47,20 +59,12 @@
             <label for="course_title" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Course Title:</label>
             {{ form.course_title }}
             <br>
-
-            {% comment %}
-            {% if errors_html %}
-                <div style="color: red; margin-top: 1em; margin-left: 3em; font-size: small;">Errors:
-                    {{ errors_html|safe  }}
-                </div>
-            {% endif %}
-            {% endcomment %}
             
             <!-- Submit Button -->
-            <!-- <input type="submit" value="Submit" style="display: block; margin: 2em auto 0;"> -->
             <input type="submit" value="Submit" style="display: block; margin: 2em auto 0; width: 10em;">
         </form>
     </fieldset>
+
     <div id="usage" style="font-style: italic; margin-top: 1.5em;">
         <p>Usage:</p>
         <p>(all fields required)</p>
@@ -74,7 +78,7 @@
             <li style="margin-bottom: 0.5em;">OCRA will be searched for reading-list data, and a downloadable tsv-file (tab-separated-values) for Leganto will be prepared.</li>
         </ul>
     </div>
-    </div>
 
+</div>
 
 {% endblock content %}

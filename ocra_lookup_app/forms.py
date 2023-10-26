@@ -21,7 +21,7 @@ class CourseAndEmailForm( forms.Form) :
         required=True,
         )
     year = forms.CharField( 
-        label='Year', 
+        label='Reading-list Year', 
         max_length=4, 
         required=True, 
         # initial=str(datetime.datetime.now().year),
