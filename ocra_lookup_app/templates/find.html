@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}
+<style>
+    .errorlist li {
+      color: red;
+    }
+  </style>  
+{% endblock %}
+
 {% block header %}
 {% endblock header %}
 
@@ -20,8 +28,9 @@
             <br>
             
             <!-- Email-address Field -->
+            {{ form.course_code.errors }}
             <label for="emailAddress" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Instructor-email:</label>
-            <input type="email" id="email_address" name="email_address" style="text-align: left; display: inline-block; width: 15em;" value="{{ email_address_value }}">
+            {{ form.email_address }}
             <br>
 
             <!-- Year Field -->
@@ -39,12 +48,14 @@
             {{ form.course_title }}
             <br>
 
+            {% comment %}
             {% if errors_html %}
                 <div style="color: red; margin-top: 1em; margin-left: 3em; font-size: small;">Errors:
                     {{ errors_html|safe  }}
                 </div>
             {% endif %}
-        
+            {% endcomment %}
+            
             <!-- Submit Button -->
             <!-- <input type="submit" value="Submit" style="display: block; margin: 2em auto 0;"> -->
             <input type="submit" value="Submit" style="display: block; margin: 2em auto 0; width: 10em;">

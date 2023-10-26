@@ -13,17 +13,18 @@ class CourseAndEmailForm( forms.Form) :
         label='Course Code', 
         max_length=20, 
         required=True,
-        initial='ABCD_1234',
+        # initial='',
         widget=forms.TextInput( attrs={'style': 'width:10em;'} )
         )
     email_address = forms.EmailField( 
-        label='Email Address' 
+        label='Email Address',
+        required=True,
         )
     year = forms.CharField( 
         label='Year', 
         max_length=4, 
         required=True, 
-        initial=str(datetime.datetime.now().year),
+        # initial=str(datetime.datetime.now().year),
         widget=forms.TextInput( attrs={'style': 'width:10em;'} ) 
         )
     TERM_CHOICES = [
@@ -36,7 +37,7 @@ class CourseAndEmailForm( forms.Form) :
         label='Course Title', 
         max_length=100, 
         required=True, 
-        initial='TITLE',
+        # initial='TITLE',
         widget=forms.TextInput( attrs={'style': 'width:25em;'} ) 
         )
 
@@ -72,7 +73,7 @@ class CourseAndEmailForm( forms.Form) :
         term = self.cleaned_data.get('term')
         # Check if term is empty ----------------------------
         if term not in ['fall', 'spring', 'summer']:
-            raise forms.ValidationError( 'Term cannot be empty.' )
+            raise forms.ValidationError( 'Term must be either fall or spring or summer.' )
         return term
 
     ## end CourseAndEmailForm()

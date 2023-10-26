@@ -33,10 +33,42 @@ def find(request):
     log.debug(f'request.session.items(), ``{pprint.pformat(request.session.items())}``')
     log.debug(f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``')
 
-    form = 'iniit'
+    form = 'init'
     if request.method == 'GET':
+        log.debug( 'GET detected' )
         form = CourseAndEmailForm()
-
+    elif request.method == 'POST':
+        log.debug( 'POST detected' )
+        form = CourseAndEmailForm( request.POST )
+        log.debug( 'form instantiated' )
+        if form.is_valid():
+            log.debug( 'form is valid' )
+            ## look for an existing record --------------------------
+            ci = CourseInfo.objects.filter( 
+                course_code=request.POST['course_code'].lower(), 
+                email_address=request.POST['email_address'].lower() ).first()
+            if ci:
+                log.debug( 'existing record found' )
+                url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+            ## no existing record, so create one --------------------
+            else:  
+                log.debug( 'no existing record found' )
+                ci = CourseInfo()
+                ci.course_code = request.POST['course_code']
+                ci.email_address = request.POST['email_address']
+                ci.year = request.POST['year']
+                ci.term = request.POST['term']
+                ci.course_title = request.POST['course_title']
+                ci.save()
+                ci.refresh_from_db()
+                url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
+            log.debug( f'redirect-url, ``{url}``' )
+            return HttpResponseRedirect( url )  
+        else:
+            log.debug( 'form is not valid, so will return the updated form-object (which now will contain errors)' )
+            log.debug( f'form.errors, ``{form.errors}``' )
+    else:
+        return HttpResponseBadRequest( '400 / Bad Request' )
     return render(request, 'find.html', {'form': form})
     
         
@@ -69,6 +101,7 @@ def find(request):
     log.debug(f'context, ``{context}``')
     return render(request, 'find.html', context)
     ## end def find()
+
 
 # @ensure_csrf_cookie
 # def find(request):
