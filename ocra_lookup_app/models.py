@@ -30,7 +30,6 @@ class CourseInfo( models.Model ):
         display: str = f'{self.course_code}--{uuid_segment}'
         return display
 
-
     def save(self, *args, **kwargs):
         """ Validates that `data` field is valid JSON.
             See tests.CourseInfoTest() for test-documentation. """
@@ -39,9 +38,30 @@ class CourseInfo( models.Model ):
             log.debug( 'data exists' )
             try:
                 json.loads( self.data )
-            except (TypeError, ValueError):
-                msg = "Invalid JSON data for 'data' field."
-                log.warning( f'bad data, ``{self.data}``' )
+                log.debug( 'data is valid JSON; saving' )
+                super().save(*args, **kwargs)
+            # except (TypeError, ValueError):
+            except Exception as e:
+                msg = "Invalid JSON data for 'data' field; error is: %s" % e
+                log.warning( f'bad data; not saving, ``{self.data}``' )
                 log.exception( msg )
                 raise ValidationError( msg )
-        super().save(*args, **kwargs)
+        else:
+            log.debug( 'no data to validate; saving' )
+            super().save(*args, **kwargs)
+        
+
+    # def save(self, *args, **kwargs):
+    #     """ Validates that `data` field is valid JSON.
+    #         See tests.CourseInfoTest() for test-documentation. """
+    #     log.debug( 'starting save()' )
+    #     if self.data:
+    #         log.debug( 'data exists' )
+    #         try:
+    #             json.loads( self.data )
+    #         except (TypeError, ValueError):
+    #             msg = "Invalid JSON data for 'data' field."
+    #             log.warning( f'bad data, ``{self.data}``' )
+    #             log.exception( msg )
+    #             raise ValidationError( msg )
+    #     super().save(*args, **kwargs)
