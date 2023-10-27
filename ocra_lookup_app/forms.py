@@ -45,6 +45,7 @@ class CourseAndEmailForm( forms.Form) :
 
     def clean_course_code(self):
         course_code = self.cleaned_data.get( 'course_code' )
+        course_code = course_code.lower().strip()
         ## Check if course_code is empty ----------------------------
         if not course_code:
             raise forms.ValidationError( 'Course code cannot be empty.' )
@@ -59,6 +60,7 @@ class CourseAndEmailForm( forms.Form) :
 
     def clean_email_address(self):
         email_address = self.cleaned_data.get('email_address')
+        email_address = email_address.lower().strip()
         # -- Check if email_address is empty ------------------------
         if not email_address:
             raise forms.ValidationError( 'Email address cannot be empty.' )
@@ -69,6 +71,7 @@ class CourseAndEmailForm( forms.Form) :
     
     def clean_year(self):
         year = self.cleaned_data.get('year')
+        year = year.lower().strip()
         # -- Check if year is empty ---------------------------------
         if not year:
             raise forms.ValidationError( 'Year cannot be empty.' )
@@ -81,16 +84,23 @@ class CourseAndEmailForm( forms.Form) :
         # -- Check that year falls within a certain range
         year_int = int( year )
         if year_int < datetime.datetime.now().year:
-            raise forms.ValidationError( "Year should not be in the past." )    
-        return False
-        
+            raise forms.ValidationError( "Year should not be in the past." )            
         return year
 
     def clean_term(self):
         term = self.cleaned_data.get('term')
+        term = term.lower().strip()
         # Check if term is empty ----------------------------
         if term not in ['fall', 'spring', 'summer']:
             raise forms.ValidationError( 'Term must be either fall or spring or summer.' )
         return term
+    
+    def clean_course_title(self):
+        course_title = self.cleaned_data.get('course_title')
+        course_title = course_title.strip()
+        # Check if course_title is empty ----------------------------
+        if not course_title:
+            raise forms.ValidationError( 'Course title cannot be empty.' )
+        return course_title
 
     ## end CourseAndEmailForm()
