@@ -12,7 +12,7 @@
         text-align: right;
         display: inline-block;
         width: 150px;
-        margin-top: .5em;
+        margin-bottom: .5em;
     }
 
 </style>  
@@ -26,7 +26,6 @@
 <div id="formbox" style="width: 600px; margin: auto; padding-top: 2em;">
 
     <fieldset name="Single File Upload">
-        <!-- <form action="/form_handler/" method="post"> -->
         <form action="{% url 'find_url' %}" method="post">
             {% csrf_token %}
         
@@ -34,29 +33,31 @@
 
             <!-- Course-code Field -->
             {{ form.course_code.errors }}
-            <label for="course_code" style="text-align: right; display: inline-block; width: 150px; margin-top: 1em;">Course-code:</label>
+            {{ form.course_code.label_tag }}
             {{ form.course_code }}
             <br>
             
             <!-- Email-address Field -->
-            {{ form.course_code.errors }}
-            <label for="emailAddress" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Instructor-email:</label>
+            {{ form.email_address.errors }}
+            {{ form.email_address.label_tag }}
             {{ form.email_address }}
             <br>
 
             <!-- Year Field -->
-            <!-- <label for="year" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Year:</label> -->
+            {{ form.year.errors }}
             {{ form.year.label_tag }}
             {{ form.year }}
             <br>
             
             <!-- Term Field -->
-            <label for="term" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Reading-list Term:</label>
+            {{ form.term.errors }}
+            {{ form.term.label_tag }}
             {{ form.term }}
             <br>
 
             <!-- Course-Title Field -->
-            <label for="course_title" style="text-align: right; display: inline-block; width: 150px; margin-top: .5em;">Course Title:</label>
+            {{ form.course_title.errors }}
+            {{ form.course_title.label_tag }}
             {{ form.course_title }}
             <br>
             
@@ -70,12 +71,12 @@
         <p>(all fields required)</p>
         <ul>
             <li style="margin-bottom: 0.5em;">Enter a course-code in the format "HIST_1234a" (no quotes).</li>
-            <li style="margin-bottom: 0.5em;">Enter the professor's email-address.</li>
+            <li style="margin-bottom: 0.5em;">Enter the instructor's email-address.</li>
             <li style="margin-bottom: 0.5em;">Enter the 4-digit year that will be part of the Leganto course-code.</li>
-            <li style="margin-bottom: 0.5em;">Enter the term that will be part of the Leganto course-code.</li>
-            <li style="margin-bottom: 0.5em;">Enter the title for the course, for the Leganto reading-list file.</li>
+            <li style="margin-bottom: 0.5em;">Enter the term for the Leganto reading-list course-code field.</li>
+            <li style="margin-bottom: 0.5em;">Enter the course-title for the Leganto reading-list course-title field.</li>
             <li style="margin-bottom: 0.5em;">Then click the "Submit" button.</li>
-            <li style="margin-bottom: 0.5em;">OCRA will be searched for reading-list data, and a downloadable tsv-file (tab-separated-values) for Leganto will be prepared.</li>
+            <li style="margin-bottom: 0.5em;">OCRA will be searched for reading-list data, and a downloadable tab-separated-values (TSV) file for Leganto will be prepared.</li>
         </ul>
     </div>
 

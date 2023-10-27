@@ -17,8 +17,10 @@ class CourseAndEmailForm( forms.Form) :
         widget=forms.TextInput( attrs={'style': 'width:10em;'} )
         )
     email_address = forms.EmailField( 
-        label='Email Address',
+        label='Instructor email',
         required=True,
+        # initial='',
+        widget=forms.TextInput( attrs={'style': 'width:18em;'} )
         )
     year = forms.CharField( 
         label='Reading-list Year', 
@@ -38,7 +40,7 @@ class CourseAndEmailForm( forms.Form) :
         max_length=100, 
         required=True, 
         # initial='TITLE',
-        widget=forms.TextInput( attrs={'style': 'width:25em;'} ) 
+        widget=forms.TextInput( attrs={'style': 'width:26em;'} ) 
         )
 
     def clean_course_code(self):
@@ -57,16 +59,31 @@ class CourseAndEmailForm( forms.Form) :
 
     def clean_email_address(self):
         email_address = self.cleaned_data.get('email_address')
-        # Check if email_address is empty ----------------------------
+        # -- Check if email_address is empty ------------------------
         if not email_address:
             raise forms.ValidationError( 'Email address cannot be empty.' )
+        # -- Check if email_address is valid ------------------------
+        if not '@' in email_address:
+            raise forms.ValidationError( 'Email address must contain an @.' )
         return email_address
     
     def clean_year(self):
         year = self.cleaned_data.get('year')
-        # Check if year is empty ----------------------------
+        # -- Check if year is empty ---------------------------------
         if not year:
             raise forms.ValidationError( 'Year cannot be empty.' )
+        # -- Check if the string has exactly 4 characters -----------
+        if len( year ) != 4:
+            raise forms.ValidationError( 'Year must be exactly 4 numerals.' )    
+        # -- Check that all characters are digits -------------------
+        if not year.isdigit():
+            raise forms.ValidationError( 'Year must be exactly 4 numerals.' )    
+        # -- Check that year falls within a certain range
+        year_int = int( year )
+        if year_int < datetime.datetime.now().year:
+            raise forms.ValidationError( "Year should not be in the past." )    
+        return False
+        
         return year
 
     def clean_term(self):
