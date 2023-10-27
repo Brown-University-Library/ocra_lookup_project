@@ -28,11 +28,10 @@ def info(request):
 
 @ensure_csrf_cookie
 def find(request):
-    """ Handles GET to find-form. """
+    """ On GET, displays form.
+        On POST, processes form. """
     log.debug('starting find()')
-    log.debug(f'request.session.items(), ``{pprint.pformat(request.session.items())}``')
-    log.debug(f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``')
-
+    log.debug( f'request.method, ``{request.method}``' )
     form = 'init'
     if request.method == 'GET':
         log.debug( 'GET detected' )
@@ -43,24 +42,32 @@ def find(request):
         log.debug( 'form instantiated' )
         if form.is_valid():
             log.debug( 'form is valid' )
+            log.debug( f'form.cleaned_data, ``{form.cleaned_data}``' )
             ## look for an existing record --------------------------
+            log.debug( f'searching for existing record on course_code, ``{form.cleaned_data["course_code"]}``; email_address, ``{form.cleaned_data["email_address"]}``' )
             ci = CourseInfo.objects.filter( 
-                course_code=request.POST['course_code'].lower(), 
-                email_address=request.POST['email_address'].lower() ).first()
-            if ci:
-                log.debug( 'existing record found' )
+                course_code=form.cleaned_data['course_code'],  # all form.cleaned_data values are stripped, and except for title, lower-cased
+                email_address=form.cleaned_data['email_address']
+                ).first()
+            if ci:  # TODO -- refactor a bit to merge the save-code
+                log.debug( 'existing record found (for course-code & instructor), will save year, term, and title' )
+                ## update year/term/title ---------------------------
+                ci.year = form.cleaned_data['year']
+                ci.term = form.cleaned_data['term']
+                ci.course_title = form.cleaned_data['course_title']
+                ci.save()
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
             ## no existing record, so create one --------------------
             else:  
-                log.debug( 'no existing record found' )
+                log.debug( 'no existing record found, will save everything' )
                 ci = CourseInfo()
-                ci.course_code = request.POST['course_code']
-                ci.email_address = request.POST['email_address']
-                ci.year = request.POST['year']
-                ci.term = request.POST['term']
-                ci.course_title = request.POST['course_title']
+                ci.course_code = form.cleaned_data['course_code']
+                ci.email_address = form.cleaned_data['email_address']
+                ci.year = form.cleaned_data['year']
+                ci.term = form.cleaned_data['term']
+                ci.course_title = form.cleaned_data['course_title']
                 ci.save()
-                ci.refresh_from_db()
+                ci.refresh_from_db()  # to get the uuid
                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
             log.debug( f'redirect-url, ``{url}``' )
             return HttpResponseRedirect( url )  
@@ -71,121 +78,6 @@ def find(request):
         return HttpResponseBadRequest( '400 / Bad Request' )
     return render(request, 'find.html', {'form': form})
     
-        
-    ## Initialize context and form ----------------------------------
-    context = {}
-    initial_data = {}
-    ## Ppopulate initial_data ---------------------------------------
-    # if 'course_code_value' in request.session.keys():
-    #     initial_data['course_code'] = request.session['course_code_value']
-    #     context['course_code_value'] = request.session['course_code_value']
-    # if 'email_address_value' in request.session.keys():
-    #     initial_data['email_address'] = request.session['email_address_value']
-    #     context['email_address_value'] = request.session['email_address_value']
-    # if 'term_value' in request.session.keys():  # Add this if you want to pre-fill the term field
-    #     initial_data['term'] = request.session['term_value']
-    ## Create form instance with initial data -----------------------
-    # form = CourseAndEmailForm(initial=initial_data)
-    form = CourseAndEmailForm()
-    ## Add form to context ------------------------------------------
-    context['form'] = form
-    ## Check for error messages in session -
-    # if 'session_error_message' in request.session.keys():
-    #     errors_html = request.session['session_error_message']
-    #     context['errors_html'] = errors_html
-    log.debug(f'context, ``{context}``')
-    ## Clear session values -----------------------------------------
-    request.session['course_code_value'] = ''
-    request.session['email_address_value'] = ''
-    request.session['session_error_message'] = ''
-    log.debug(f'context, ``{context}``')
-    return render(request, 'find.html', context)
-    ## end def find()
-
-
-# @ensure_csrf_cookie
-# def find(request):
-#     """ Handles GET to find-form. """
-#     log.debug('starting find()')
-#     log.debug(f'request.session.items(), ``{pprint.pformat(request.session.items())}``')
-#     log.debug(f'request.session.keys(), ``{pprint.pformat(request.session.keys())}``')
-#     ## Initialize context and form ----------------------------------
-#     context = {}
-#     initial_data = {}
-#     ## Ppopulate initial_data ---------------------------------------
-#     if 'course_code_value' in request.session.keys():
-#         initial_data['course_code'] = request.session['course_code_value']
-#         context['course_code_value'] = request.session['course_code_value']
-#     if 'email_address_value' in request.session.keys():
-#         initial_data['email_address'] = request.session['email_address_value']
-#         context['email_address_value'] = request.session['email_address_value']
-#     if 'term_value' in request.session.keys():  # Add this if you want to pre-fill the term field
-#         initial_data['term'] = request.session['term_value']
-#     ## Create form instance with initial data -----------------------
-#     form = CourseAndEmailForm(initial=initial_data)
-#     ## Add form to context ------------------------------------------
-#     context['form'] = form
-#     ## Check for error messages in session -
-#     if 'session_error_message' in request.session.keys():
-#         errors_html = request.session['session_error_message']
-#         context['errors_html'] = errors_html
-#     log.debug(f'context, ``{context}``')
-#     ## Clear session values -----------------------------------------
-#     request.session['course_code_value'] = ''
-#     request.session['email_address_value'] = ''
-#     request.session['session_error_message'] = ''
-#     log.debug(f'context, ``{context}``')
-#     return render(request, 'find.html', context)
-#     ## end def find()
-
-
-
-# def form_handler(request):
-#     """ Handles POST from find-form. """
-#     log.debug( 'starting form_handler()' )
-#     request.session['session_error_message'] = ''  # session-errors set here
-#     log.debug( f'request.session.items(), ``{pprint.pformat(request.session.items())}``' )
-#     try:
-#         if request.method != 'POST':
-#             log.debug( 'non-POST detected; returning bad-request' )
-#             return HttpResponseBadRequest( '400 / Bad Request' )
-#         log.debug( 'POST detected' )
-#         form = CourseAndEmailForm( request.POST )
-#         if form.is_valid():
-#             log.debug( 'form is valid' )
-#             ## look for an existing record --------------------------
-#             ci = CourseInfo.objects.filter( 
-#                 course_code=request.POST['course_code'].lower(), 
-#                 email_address=request.POST['email_address'].lower() ).first()
-#             if ci:
-#                 log.debug( 'existing record found' )
-#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
-#             ## no existing record, so create one --------------------
-#             else:  
-#                 log.debug( 'no existing record found' )
-#                 ci = CourseInfo()
-#                 ci.course_code = request.POST['course_code']
-#                 ci.email_address = request.POST['email_address']
-#                 ci.year = request.POST['year']
-#                 ci.term = request.POST['term']
-#                 ci.course_title = request.POST['course_title']
-#                 ci.save()
-#                 ci.refresh_from_db()
-#                 url = reverse( 'results_url', kwargs={'the_uuid': ci.uuid} )
-#             log.debug( f'redirect-url, ``{url}``' )
-#             resp = HttpResponseRedirect( url )  
-#         else:
-#             log.debug( 'form is not valid' )
-#             request.session['course_code_value'] = request.POST['course_code']      # to avoid re-entering
-#             request.session['email_address_value'] = request.POST['email_address']  # to avoid re-entering
-#             request.session['session_error_message'] = form.errors.as_ul()          # for display back in find-form
-#             resp = HttpResponseRedirect( reverse('find_url') )
-#     except Exception as e:
-#         log.exception( 'problem in uploader()...' )
-#         resp = HttpResponseServerError( 'Rats; webapp error. DT has been notified, but if this continues, bug them!' )
-#     return resp    
-#     ## end def form_handler()
-
 
 def results(request, the_uuid):
     """ - Checks if data is in db.
@@ -211,7 +103,8 @@ def results(request, the_uuid):
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.title )
+        1/0
+        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
         if data:
             log.debug( 'data returned from OCRA' )
