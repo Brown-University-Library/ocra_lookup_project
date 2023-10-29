@@ -93,6 +93,16 @@ def results(request, the_uuid):
         log.exception( 'problem in uuid-lookup...' )
         return HttpResponseNotFound( '<div>404 / Not Found</div>' )
     log.debug( f'ci, ``{pprint.pformat(ci.__dict__)}``' )
+
+    from django.forms.models import model_to_dict
+    ci_dct = model_to_dict(ci)
+    ci_dct['uuid'] = str( ci.uuid )
+    log.debug( f'ci_dct from django model-to-dict, ``{pprint.pformat(ci_dct)}``' )
+    ci_dct2 = f'{pprint.pformat(ci.__dict__)}'
+    log.debug( f'ci_dct2 from a straight __dict__, ``{pprint.pformat(ci_dct2)}``' )
+    ci_jsn = json.dumps(ci_dct, sort_keys=True, indent=2)
+    return HttpResponse( ci_jsn, content_type='application/json' )
+
     ## check if data exists in db -----------------------------------
     if ci.data:
         log.debug( 'data exists in db' )
