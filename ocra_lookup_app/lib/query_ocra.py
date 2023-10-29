@@ -151,9 +151,9 @@ class DbStuff:
 
     def __init__(self):
         self.HOST = os.environ['OCRA_LKP__DB_HOST']
-        self.USERNAME = os.environ['OCRA_LKP__DB_USERNAME']
-        self.PASSWORD = os.environ['OCRA_LKP__DB_PASSWORD']
-        self.DB = os.environ['OCRA_LKP__DB_DATABASE_NAME']
+        self.USERNAME = os.environ['OCRA_LKP__OCRA_DB_USERNAME']
+        self.PASSWORD = os.environ['OCRA_LKP__OCRA_DB_PASSWORD']
+        self.DB = os.environ['OCRA_LKP__OCRA_DB_DATABASE_NAME']
         self.CDL_USERNAME = os.environ['OCRA_LKP__CDL_DB_USERNAME']
         self.CDL_PASSWORD = os.environ['OCRA_LKP__CDL_DB_PASSWORD']
         self.CDL_DB = os.environ['OCRA_LKP__CDL_DB_DATABASE_NAME']
