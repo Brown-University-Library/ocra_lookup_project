@@ -22,6 +22,7 @@ class CDL_Checker(object):
         self.CDL_TITLES: list = []
 
     def populate_cdl_titles( self ) -> list:
+        log.debug( 'starting populate_cdl_titles()' )
         db_connection = db_stuff.get_CDL_db_connection()
         sql = "SELECT * FROM `cdl_app_item` ORDER BY `title` ASC"
         log.debug( f'sql, ``{sql}``' )

@@ -4,6 +4,7 @@ import trio
 # from .forms import CourseAndEmailForm
 from django.conf import settings as project_settings
 from django.core.exceptions import ValidationError
+from django.forms.models import model_to_dict
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -94,14 +95,14 @@ def results(request, the_uuid):
         return HttpResponseNotFound( '<div>404 / Not Found</div>' )
     log.debug( f'ci, ``{pprint.pformat(ci.__dict__)}``' )
 
-    from django.forms.models import model_to_dict
-    ci_dct = model_to_dict(ci)
-    ci_dct['uuid'] = str( ci.uuid )
-    log.debug( f'ci_dct from django model-to-dict, ``{pprint.pformat(ci_dct)}``' )
-    ci_dct2 = f'{pprint.pformat(ci.__dict__)}'
-    log.debug( f'ci_dct2 from a straight __dict__, ``{pprint.pformat(ci_dct2)}``' )
-    ci_jsn = json.dumps(ci_dct, sort_keys=True, indent=2)
-    return HttpResponse( ci_jsn, content_type='application/json' )
+    ## temp display from db -------------------------------------
+    # ci_dct = model_to_dict(ci)
+    # ci_dct['uuid'] = str( ci.uuid )
+    # log.debug( f'ci_dct from django model-to-dict, ``{pprint.pformat(ci_dct)}``' )
+    # ci_dct2 = f'{pprint.pformat(ci.__dict__)}'
+    # log.debug( f'ci_dct2 from a straight __dict__, ``{pprint.pformat(ci_dct2)}``' )
+    # ci_jsn = json.dumps(ci_dct, sort_keys=True, indent=2)
+    # return HttpResponse( ci_jsn, content_type='application/json' )
 
     ## check if data exists in db -----------------------------------
     if ci.data:
@@ -113,9 +114,9 @@ def results(request, the_uuid):
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        1/0
         data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
+        1/0
         if data:
             log.debug( 'data returned from OCRA' )
             jsn: str = json.dumps( data )

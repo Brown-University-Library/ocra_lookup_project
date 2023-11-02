@@ -187,7 +187,8 @@ def query_ocra( course_code: str, email_address: str, ci_year: str, ci_term: str
     log.debug( f'oit_course_id, ``{oit_course_id}``' )
     cdl_checker = CDL_Checker()
     oit_section_id = 'S01'
-    oit_title = course_data_val['oit_course_title']
+    # oit_title = course_data_val['oit_course_title']
+    oit_title = ci_title
 
     ## enhance articles -----------------------------------------
     combined_articles = combined_course_data_dict['ocra_articles']

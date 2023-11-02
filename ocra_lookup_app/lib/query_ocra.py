@@ -160,6 +160,7 @@ class DbStuff:
 
     def get_db_connection( self ) -> pymysql.connections.Connection:
         """ Returns a connection to the database. """
+        log.debug( 'starting get_db_connection()' )
         try:
             db_connection: pymysql.connections.Connection = pymysql.connect(  ## the with auto-closes the connection on any problem
                     host=self.HOST,
@@ -175,6 +176,7 @@ class DbStuff:
         return db_connection
 
     def get_CDL_db_connection( self ):  # yes, yes, i should obviously refactor these two
+        log.debug( 'starting get_CDL_db_connection()' )
         db_connection = pymysql.connect(  ## the with auto-closes the connection on any problem
                 host=self.HOST,
                 user=self.CDL_USERNAME,
