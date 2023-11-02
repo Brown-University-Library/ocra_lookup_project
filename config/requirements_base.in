@@ -1,3 +1,4 @@
+cryptography==41.0.5  # required by pymysql in certain situations
 Django==4.2.3
 fuzzywuzzy==0.18.0
 git+https://github.com/birkin/shellvars-py.git
