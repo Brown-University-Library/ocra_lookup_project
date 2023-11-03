@@ -107,16 +107,15 @@ def results(request, the_uuid):
     ## check if data exists in db -----------------------------------
     if ci.data:
         log.debug( 'data exists in db' )
-        data: dict = json.loads( ci.data )
+        data: list = json.loads( ci.data )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
         context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
         return render( request, 'results.html', context )
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        data = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
+        data: list = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
         log.debug( f'data, ``{pprint.pformat(data)}``' )
-        1/0
         if data:
             log.debug( 'data returned from OCRA' )
             jsn: str = json.dumps( data )
