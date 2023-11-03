@@ -140,7 +140,8 @@ def map_article( initial_article_data: dict, course_id: str, leganto_course_id: 
     mapped_article_data['citation_source2'] = initial_article_data['art_url']  
     mapped_article_data['citation_source3'] = map_bruknow_openurl( initial_article_data.get('sfxlink', '') )  
     # mapped_article_data['citation_source4'] = check_pdfs( initial_article_data, CSV_DATA, course_id )
-    mapped_article_data['citation_source4'] = check_pdfs( initial_article_data, settings['PDF_DATA'], course_id, settings )
+    # mapped_article_data['citation_source4'] = check_pdfs( initial_article_data, settings['PDF_DATA'], course_id, settings )
+    mapped_article_data['citation_source4'] = check_pdfs( initial_article_data, settings.PDF_DATA, course_id )
     mapped_article_data['citation_start_page'] = str(initial_article_data['spage']) if initial_article_data['spage'] else parse_start_page_from_ourl( ourl_parts )
     mapped_article_data['citation_title'] = initial_article_data['atitle'].strip()
     mapped_article_data['citation_journal_title'] = initial_article_data['title']
@@ -459,7 +460,7 @@ def parse_end_page_from_ourl( parts: dict ):
 ## misc helpers -----------------------------------------------------
 
 
-def check_pdfs( db_dict_entry: dict, pdf_data: dict, course_code: str, settings: dict ) -> str:
+def check_pdfs( db_dict_entry: dict, pdf_data: dict, course_code: str ) -> str:
     """ Check and return the pdf for the given ocra article or excerpt. 
         Called by map_article() and map_excerpt() 
         Note: course_code does not separate out subject from code; rather, it is like `HIST1234`. """

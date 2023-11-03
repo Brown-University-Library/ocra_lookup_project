@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import json, logging, os
+import json, logging, os, pprint
 from pathlib import Path
 
 log = logging.getLogger(__name__)
@@ -199,7 +199,15 @@ LOGGING = {
 # PATTERN_LIB_CACHE_TIMEOUT = int( os.environ['OCRA_LKP__PATTERN_LIB_CACHE_TIMEOUT_IN_HOURS'] )
 
 ## scanned-files data ---------------------------
-PDF_DATA = 'WILL-BE-AUTO-POPULATED'
 PDF_JSON_PATH = os.environ['OCRA_LKP__PDF_JSON_PATH']
+
+PDF_DATA = 'WILL-BE-AUTO-POPULATED'
+pdf_data = {}
+with open( PDF_JSON_PATH, encoding='utf-8' ) as f_reader:
+    jsn: str = f_reader.read()
+    pdf_data = json.loads( jsn )
+log.debug( f'pdf_data (partial), ``{pprint.pformat(pdf_data)[0:1000]}``' )
+PDF_DATA = pdf_data
+
 PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
 PDF_SQL = os.environ['OCRA_LKP__PDF_SQL']
