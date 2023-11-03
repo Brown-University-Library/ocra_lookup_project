@@ -5,7 +5,7 @@
 
     /* The errorlist class doesn't appear in this file; it's auto-created when necessary by the `form` object. */
     .errorlist li {
-      color: red;
+      color: rgb(167, 14, 14);
     }
 
     label {
@@ -13,6 +13,15 @@
         display: inline-block;
         width: 150px;
         margin-bottom: .5em;
+    }
+
+    .fields_info {
+        text-align: left;
+        font-size: 1.2em;
+        font-weight: normal;
+        color: rgb(167, 14, 14);
+        margin-bottom: 0.5em;
+        font-style: italic;
     }
 
 </style>  
@@ -31,6 +40,9 @@
         
             {{ form.non_field_errors }}
 
+            <!-- Info line for OCRA search -->
+            <h1 class="fields_info">For OCRA search...</h1>
+
             <!-- Course-code Field -->
             {{ form.course_code.errors }}
             {{ form.course_code.label_tag }}
@@ -43,6 +55,9 @@
             {{ form.email_address }}
             <br>
 
+            <!-- Info line for Leganto reading-list display -->
+            <h1 class="fields_info">For Leganto reading-list display...</h1>
+            
             <!-- Year Field -->
             {{ form.year.errors }}
             {{ form.year.label_tag }}
