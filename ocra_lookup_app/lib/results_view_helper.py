@@ -182,10 +182,17 @@ def query_ocra( course_code: str, email_address: str, ci_year: str, ci_term: str
     combined_course_data_dict = combine_course_data( ocra_course_data )
     
     ## prepare data for enhancements ----------------------------
-    # course_id = f'%s%s' % ( course_key.split('.')[0].upper(), course_key.split('.')[1].upper )  # e.g., 'ENGL1234'
-    course_id = f'%s%s' % ( updated_key.split('.')[0].upper(), updated_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+    log.debug( f'updated_key for oit_course_id prep, ``{updated_key}``' )
+    first_part = updated_key.split('.')[0].upper()
+    log.debug( f'first_part, ``{first_part}``' )
+    second_part = updated_key.split('.')[1].upper()
+    log.debug( f'second_part, ``{second_part}``' )
+    # course_id = f'%s%s' % ( updated_key.split('.')[0].upper(), updated_key.split('.')[1].upper )  # e.g., 'ENGL1234'
+    course_id = f'{first_part}{second_part}'  # e.g., 'ENGL1234'
+    log.debug( f'course_id, ``{course_id}``' )
     # oit_course_id = course_data_val['oit_course_id']
-    oit_course_id = f'brown.{course_id}.{ci_year}-{ci_term}.s01'  # e.g., 'brown.musc.1663.2023-fall.s01'
+    # oit_course_id = f'brown.{course_id}.{ci_year}-{ci_term}.s01'  # e.g., 'brown.musc.1663.2023-fall.s01'
+    oit_course_id = f'brown.{updated_key}.{ci_year}-{ci_term}.s01'  # e.g., 'brown.musc.1663.2023-fall.s01
     log.debug( f'oit_course_id, ``{oit_course_id}``' )
     cdl_checker = CDL_Checker()
     oit_section_id = 'S01'
