@@ -121,10 +121,15 @@ def results(request, the_uuid):
         jsn: str = json.dumps( ocra_data )
         ci.data = jsn  # type: ignore
         ci.save()
-        
     log.debug( f'data, ``{pprint.pformat(ocra_data)}``' )
+
+    ## make the tsv file --------------------------------------------
+    pass
+
+    ## prepare context ----------------------------------------------
     context = results_view_helper.make_context( request, ci.course_code, ci.email_address, ocra_data )
 
+    ## return response ----------------------------------------------
     if request.GET.get( 'format', '' ) == 'json':
         log.debug( 'returning json' )
         jsn = json.dumps( context, sort_keys=True, indent=2 )
@@ -132,7 +137,6 @@ def results(request, the_uuid):
     else:
         log.debug( 'returning html' )
         return render( request, 'results.html', context )
-
 
     ## end def results()
 
