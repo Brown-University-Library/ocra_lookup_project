@@ -78,7 +78,7 @@ def find(request):
     else:
         return HttpResponseBadRequest( '400 / Bad Request' )
     return render(request, 'find.html', {'form': form})
-    
+
 
 def results(request, the_uuid):
     """ - Checks if data is in db.
@@ -105,27 +105,84 @@ def results(request, the_uuid):
     # return HttpResponse( ci_jsn, content_type='application/json' )
 
     ## check if data exists in db -----------------------------------
+    ocra_data: list = []
     if ci.data:
-        log.debug( 'data exists in db' )
-        data: list = json.loads( ci.data )
-        log.debug( f'data, ``{pprint.pformat(data)}``' )
-        context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
-        return render( request, 'results.html', context )
+        log.debug( 'data exists in db-cache' )
+        ocra_data: list = json.loads( ci.data )
     ## if data doesn't exist in db, query OCRA ----------------------
     else:
         log.debug( 'data does not exist in db; querying OCRA' )
-        data: list = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
-        log.debug( f'data, ``{pprint.pformat(data)}``' )
-        if data:
-            log.debug( 'data returned from OCRA' )
-            jsn: str = json.dumps( data )
-            ci.data = jsn  # type: ignore
-            ci.save()
-            context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
-            return render( request, 'results.html', context )
+        ocra_data: list = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
+        log.debug( 'ocra queried for data' )
+        if ocra_data:  # at the least it'll be an empty list
+            log.debug( 'ocra data found' )
         else:
-            log.debug( 'no data returned from OCRA' )
-            return HttpResponse( 'no data returned from OCRA' )
+            log.debug( 'no ocra data found' )
+        jsn: str = json.dumps( ocra_data )
+        ci.data = jsn  # type: ignore
+        ci.save()
+        
+    log.debug( f'data, ``{pprint.pformat(ocra_data)}``' )
+    context = results_view_helper.make_context( request, ci.course_code, ci.email_address, ocra_data )
+
+    if request.GET.get( 'format', '' ) == 'json':
+        log.debug( 'returning json' )
+        jsn = json.dumps( context, sort_keys=True, indent=2 )
+        return HttpResponse( jsn, content_type='application/json; charset=utf-8' )
+    else:
+        log.debug( 'returning html' )
+        return render( request, 'results.html', context )
+
+
+    ## end def results()
+
+
+# def results(request, the_uuid):
+#     """ - Checks if data is in db.
+#         - If necessary, querys OCRA for data (and saves it to db).
+#         - Prepares downloadable reading-list file.
+#     """
+#     ## use the get query for a CourseInfo.uuid ------------------
+#     log.debug('starting results()')
+#     log.debug(f'the_uuid, ``{the_uuid}``')
+#     try:
+#         ci = get_object_or_404(CourseInfo, uuid=the_uuid)
+#     except ValidationError:
+#         log.exception( 'problem in uuid-lookup...' )
+#         return HttpResponseNotFound( '<div>404 / Not Found</div>' )
+#     log.debug( f'ci, ``{pprint.pformat(ci.__dict__)}``' )
+
+#     ## temp display from db -------------------------------------
+#     # ci_dct = model_to_dict(ci)
+#     # ci_dct['uuid'] = str( ci.uuid )
+#     # log.debug( f'ci_dct from django model-to-dict, ``{pprint.pformat(ci_dct)}``' )
+#     # ci_dct2 = f'{pprint.pformat(ci.__dict__)}'
+#     # log.debug( f'ci_dct2 from a straight __dict__, ``{pprint.pformat(ci_dct2)}``' )
+#     # ci_jsn = json.dumps(ci_dct, sort_keys=True, indent=2)
+#     # return HttpResponse( ci_jsn, content_type='application/json' )
+
+#     ## check if data exists in db -----------------------------------
+#     if ci.data:
+#         log.debug( 'data exists in db' )
+#         data: list = json.loads( ci.data )
+#         log.debug( f'data, ``{pprint.pformat(data)}``' )
+#         context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
+#         return render( request, 'results.html', context )
+#     ## if data doesn't exist in db, query OCRA ----------------------
+#     else:
+#         log.debug( 'data does not exist in db; querying OCRA' )
+#         data: list = results_view_helper.query_ocra( ci.course_code, ci.email_address, ci.year, ci.term, ci.course_title )
+#         log.debug( f'data, ``{pprint.pformat(data)}``' )
+#         if data:
+#             log.debug( 'data returned from OCRA' )
+#             jsn: str = json.dumps( data )
+#             ci.data = jsn  # type: ignore
+#             ci.save()
+#             context = results_view_helper.make_context( request, ci.course_code, ci.email_address, data )
+#             return render( request, 'results.html', context )
+#         else:
+#             log.debug( 'no data returned from OCRA' )
+#             return HttpResponse( 'no data returned from OCRA' )
 
 
 # -------------------------------------------------------------------
