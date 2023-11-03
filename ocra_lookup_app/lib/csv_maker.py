@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 # CSV_OUTPUT_DIR_PATH: str = os.environ['LGNT__CSV_OUTPUT_DIR_PATH']
 
 
-def create_csv( data: list, headers: list ) -> None:
+def create_tsv( data: list, headers: list ) -> None:
     """ Credit: <https://python-adv-web-apps.readthedocs.io/en/latest/csv.html#writing-from-a-dictionary> """
 
     log.debug( f'data, ``{pprint.pformat(data)}``' )
@@ -28,7 +28,8 @@ def create_csv( data: list, headers: list ) -> None:
     output_filename: str = f'list_{datetimestamp}.tsv'  # produces, eg, `reading_list_2022-09-06T10-59-04.34.tsv`
     log.debug( f'output_filename, ``{output_filename}``' ) 
 
-    output_filepath: str = f'{CSV_OUTPUT_DIR_PATH}/2023_fall/{output_filename}'
+    # output_filepath: str = f'{CSV_OUTPUT_DIR_PATH}/2023_fall/{output_filename}'
+    output_filepath: str = f'{settings.TSV_OUTPUT_DIR_PATH}/{output_filename}'
 
     ## open a new file for writing - if file exists, contents will be erased
     csvfile = open( output_filepath, 'w' )
