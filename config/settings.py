@@ -201,13 +201,11 @@ LOGGING = {
 ## scanned-files data ---------------------------
 PDF_JSON_PATH = os.environ['OCRA_LKP__PDF_JSON_PATH']
 
-PDF_DATA = 'WILL-BE-AUTO-POPULATED'
-pdf_data = {}
+PDF_DATA = {}  # will be auto-populated
 with open( PDF_JSON_PATH, encoding='utf-8' ) as f_reader:
     jsn: str = f_reader.read()
-    pdf_data = json.loads( jsn )
-log.debug( f'pdf_data (partial), ``{pprint.pformat(pdf_data)[0:1000]}``' )
-PDF_DATA = pdf_data
+    PDF_DATA = json.loads( jsn )
+log.debug( f'pdf_data (partial), ``{pprint.pformat(PDF_DATA)[0:1000]}``' )
 
 PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
 PDF_SQL = os.environ['OCRA_LKP__PDF_SQL']
