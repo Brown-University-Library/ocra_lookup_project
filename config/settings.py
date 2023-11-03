@@ -211,3 +211,4 @@ PDF_DATA = pdf_data
 
 PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
 PDF_SQL = os.environ['OCRA_LKP__PDF_SQL']
+FILES_URL_PATTERN = os.environ['OCRA_LKP__FILES_URL_PATTERN']
