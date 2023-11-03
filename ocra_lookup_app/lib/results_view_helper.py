@@ -238,7 +238,7 @@ def query_ocra( course_code: str, email_address: str, ci_year: str, ci_term: str
         # end for-course loop...
 
     ## apply final leganto processing -------------------------------
-    leganto_data: list = prep_leganto_data( all_courses_enhanced_data, settings )
+    leganto_data: list = prep_leganto_data( all_courses_enhanced_data )
 
 
 
