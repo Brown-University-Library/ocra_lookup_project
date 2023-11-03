@@ -331,7 +331,7 @@ def combine_course_data( ocra_course_data ) -> dict:
     return course_data_dict
 
 
-def make_context( request, course_code: str, email_address: str, data: dict ) -> dict:
+def make_context( request, course_code: str, email_address: str, data: list ) -> dict:
     """ Builds context for results view.
         Called by views.results() """
     context = {
