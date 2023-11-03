@@ -209,4 +209,7 @@ log.debug( f'pdf_data (partial), ``{pprint.pformat(PDF_DATA)[0:1000]}``' )
 
 PDF_OLDER_THAN_DAYS = int( os.environ['OCRA_LKP__PDF_OLDER_THAN_DAYS'] )
 PDF_SQL = os.environ['OCRA_LKP__PDF_SQL']
+
 FILES_URL_PATTERN = os.environ['OCRA_LKP__FILES_URL_PATTERN']
+
+TSV_OUTPUT_DIR_PATH = os.environ['OCRA_LKP__TSV_OUTPUT_DIR_PATH']

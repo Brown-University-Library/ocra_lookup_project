@@ -126,7 +126,7 @@ def results(request, the_uuid):
     log.debug( f'data, ``{pprint.pformat(ocra_data)}``' )
 
     ## make the tsv file --------------------------------------------
-    csv_maker.create_csv( data, leganto_final_processor.get_headers() )
+    csv_maker.create_tsv( ocra_data, leganto_final_processor.get_headers() )
 
     ## prepare context ----------------------------------------------
     context = results_view_helper.make_context( request, ci.course_code, ci.email_address, ocra_data )
