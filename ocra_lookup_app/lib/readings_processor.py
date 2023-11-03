@@ -185,14 +185,14 @@ def map_book( initial_book_data: dict, leganto_course_id: str, leganto_section_i
 
 ## ebooks -----------------------------------------------------------
 
-def map_ebooks( ebook_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> list:
+def map_ebooks( ebook_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> list:
     mapped_ebooks = []
     for ebook_result in ebook_results:
-        mapped_ebook: dict = map_ebook( ebook_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings )
+        mapped_ebook: dict = map_ebook( ebook_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title )
         mapped_ebooks.append( mapped_ebook )
     return mapped_ebooks
 
-def map_ebook( initial_ebook_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> dict:
+def map_ebook( initial_ebook_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> dict:
     """ This function maps the data from the database to the format required by the Leganto API. 
         Notes: 
         - the `course_id` is used for building the url for the leganto citation_source4 field (the pdf-url).
@@ -231,14 +231,14 @@ def map_ebook( initial_ebook_data: dict, course_id: str, leganto_course_id: str,
 
 ## excerpts ---------------------------------------------------------
 
-def map_excerpts( excerpt_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> list:
+def map_excerpts( excerpt_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> list:
     mapped_articles = []
     for excerpt_result in excerpt_results:
-        mapped_excerpt: dict = map_excerpt( excerpt_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings )
+        mapped_excerpt: dict = map_excerpt( excerpt_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title )
         mapped_articles.append( mapped_excerpt )
     return mapped_articles
 
-def map_excerpt( initial_excerpt_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> dict:
+def map_excerpt( initial_excerpt_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> dict:
     log.debug( f'initial_excerpt_data, ``{pprint.pformat(initial_excerpt_data)}``' )
     mapped_excerpt_data: dict = MAPPED_CATEGORIES.copy()
     ourl_parts: dict = parse_openurl( initial_excerpt_data['sfxlink'] )
@@ -268,14 +268,14 @@ def map_excerpt( initial_excerpt_data: dict, course_id: str, leganto_course_id: 
 
 ## websites ---------------------------------------------------------
 
-def map_websites( website_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> list:
+def map_websites( website_results: list, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> list:
     mapped_websites = []
     for website_result in website_results:
-        mapped_website: dict = map_website( website_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings )
+        mapped_website: dict = map_website( website_result, course_id, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title )
         mapped_websites.append( mapped_website )
     return mapped_websites
 
-def map_website( initial_website_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> dict:
+def map_website( initial_website_data: dict, course_id: str, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> dict:
     """ This function maps the data from the database to the format required by the Leganto API. 
         Notes: 
         - the `course_id` is used for building the url for the leganto citation_source4 field (the pdf-url).
@@ -310,27 +310,27 @@ def map_website( initial_website_data: dict, course_id: str, leganto_course_id: 
 
 ## video & audio ----------------------------------------------------
 
-def map_audio_files( audio_results, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings ) -> list:
+def map_audio_files( audio_results, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title ) -> list:
     """ Runs audio mapping. 
         No course_id needed; it's only used to build pdf links.
         Called by build_reading_list.prep_basic_data """
     mapped_audio_files = []
     for audio_result in audio_results:
-        mapped_audio_file: dict = map_av( 'audio', audio_result, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings )
+        mapped_audio_file: dict = map_av( 'audio', audio_result, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title )
         mapped_audio_files.append( mapped_audio_file )
     return mapped_audio_files
 
-def map_videos( video_results, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings ) -> list:
+def map_videos( video_results, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title ) -> list:
     """ Runs video mapping. 
         No course_id needed; it's only used to build pdf links.
         Called by build_reading_list.prep_basic_data """
     mapped_videos = []
     for video_result in video_results:
-        mapped_video: dict = map_av( 'video', video_result, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title, settings )
+        mapped_video: dict = map_av( 'video', video_result, leganto_course_id, cdl_checker, leganto_section_id, leganto_course_title )
         mapped_videos.append( mapped_video )
     return mapped_videos
 
-def map_av( av_type: str, av_result: dict, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str, settings: dict ) -> dict:
+def map_av( av_type: str, av_result: dict, leganto_course_id: str, cdl_checker, leganto_section_id: str, leganto_course_title: str ) -> dict:
     """ Maps audio/video result to leganto format.
         Called by map_videos() """
     mapped_av_item: dict = MAPPED_CATEGORIES.copy()
