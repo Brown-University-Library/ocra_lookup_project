@@ -214,7 +214,7 @@ def map_ebook( initial_ebook_data: dict, course_id: str, leganto_course_id: str,
     # mapped_ebook_data['citation_source1'] = 'TEMP-ENTRY'
     mapped_ebook_data['citation_source2'] = initial_ebook_data['art_url']  
     mapped_ebook_data['citation_source3'] = map_bruknow_openurl( initial_ebook_data.get('sfxlink', '') )  
-    mapped_ebook_data['citation_source4'] = check_pdfs( initial_ebook_data, settings['PDF_DATA'], course_id, settings )
+    mapped_ebook_data['citation_source4'] = check_pdfs( initial_ebook_data, settings.PDF_DATA, course_id )
     mapped_ebook_data['citation_start_page'] = str(initial_ebook_data['spage']) if initial_ebook_data['spage'] else parse_start_page_from_ourl( ourl_parts )
     mapped_ebook_data['citation_title'] = initial_ebook_data['title'].strip()
     # mapped_ebook_data['citation_journal_title'] = initial_ebook_data['title']
@@ -253,7 +253,7 @@ def map_excerpt( initial_excerpt_data: dict, course_id: str, leganto_course_id: 
     mapped_excerpt_data['citation_source2'] = initial_excerpt_data['art_url']  
     mapped_excerpt_data['citation_source3'] = map_bruknow_openurl( initial_excerpt_data.get('sfxlink', '') )  
     # mapped_excerpt_data['citation_source4'] = check_pdfs( initial_excerpt_data, CSV_DATA, course_id )
-    mapped_excerpt_data['citation_source4'] = check_pdfs( initial_excerpt_data, settings['PDF_DATA'], course_id, settings )
+    mapped_excerpt_data['citation_source4'] = check_pdfs( initial_excerpt_data, settings.PDF_DATA, course_id )
     mapped_excerpt_data['citation_start_page'] = str(initial_excerpt_data['spage']) if initial_excerpt_data['spage'] else parse_start_page_from_ourl( ourl_parts )
     mapped_excerpt_data['citation_title'] = f'(EXCERPT) %s' % initial_excerpt_data['atitle'].strip()
     mapped_excerpt_data['citation_journal_title'] = initial_excerpt_data['title']
@@ -296,7 +296,7 @@ def map_website( initial_website_data: dict, course_id: str, leganto_course_id: 
     mapped_website_data['citation_source1'] = cdl.run_ebook_cdl_check( initial_website_data['facnotes'], initial_website_data['art_url'], initial_website_data['title'], cdl_checker )
     mapped_website_data['citation_source2'] = initial_website_data['art_url']  
     mapped_website_data['citation_source3'] = map_bruknow_openurl( initial_website_data.get('sfxlink', '') )  
-    mapped_website_data['citation_source4'] = check_pdfs( initial_website_data, settings['PDF_DATA'], course_id, settings )
+    mapped_website_data['citation_source4'] = check_pdfs( initial_website_data, settings.PDF_DATA, course_id )
     mapped_website_data['citation_start_page'] = str(initial_website_data['spage']) if initial_website_data['spage'] else parse_start_page_from_ourl( ourl_parts )
     mapped_website_data['citation_title'] = initial_website_data['title'].strip()
     mapped_website_data['citation_volume'] = initial_website_data['volume']
@@ -484,7 +484,8 @@ def check_pdfs( db_dict_entry: dict, pdf_data: dict, course_code: str ) -> str:
             pfid = str( file_info['pdfid'] )
             file_name = file_info['filename']
             full_file_name: str = f'{pfid}_{file_name}'
-            file_url = f'{settings["FILES_URL_PATTERN"]}'.replace( '{FILENAME}', full_file_name )
+            # file_url = f'{settings["FILES_URL_PATTERN"]}'.replace( '{FILENAME}', full_file_name )
+            file_url = f'{settings.FILES_URL_PATTERN}'.replace( '{FILENAME}', full_file_name )
             log.debug( f'file_url, ``{file_url}``' )
             possible_matches.append( file_url )
         else:
