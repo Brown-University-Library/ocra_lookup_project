@@ -9,7 +9,12 @@
 {% block content %}
 
 <div>
-    <p>Results info will go here...</p>
+    <h1>Results</h1>
+    <p>Click to view or download the file for leganto (not all browsers may offer viewing):</p>
+    <ul>
+        <li><a href="{% url 'view_tsv' result_uuid %}" target="_blank">View Results</a></li>
+        <li><a href="{% url 'download_tsv' result_uuid %}">Download Results</a></li>
+        </ul>
 </div>
 
 {% endblock content %}
