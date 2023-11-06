@@ -11,6 +11,9 @@ urlpatterns = [
     # path( 'results/', views.results, name='results_url' ),
     path( 'results/<the_uuid>/', views.results, name='results_url' ),
 
+    path('view_tsv/<uuid:file_uuid>/', views.view_tsv, name='view_tsv'),
+    path('download_tsv/<uuid:file_uuid>/', views.download_tsv, name='download_tsv'),
+
     ## other --------------------------------------------------------
     path( '', views.root, name='root_url' ),
     path( 'admin/', admin.site.urls ),
