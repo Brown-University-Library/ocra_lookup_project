@@ -7,7 +7,7 @@ log = logging.getLogger(__name__)
 # CSV_OUTPUT_DIR_PATH: str = os.environ['LGNT__CSV_OUTPUT_DIR_PATH']
 
 
-def create_tsv( data: list, headers: list ) -> None:
+def create_tsv( data: list, headers: list, uuid_string: str ) -> None:
     """ Credit: <https://python-adv-web-apps.readthedocs.io/en/latest/csv.html#writing-from-a-dictionary> """
 
     log.debug( f'data, ``{pprint.pformat(data)}``' )
@@ -22,10 +22,9 @@ def create_tsv( data: list, headers: list ) -> None:
         else:
             cleaned_data.append( entry )
     
-    # output_filename: str = f'reading_list_{datetime.datetime.now().isoformat()}.csv'.replace( ':', '-' )  # produces, eg, `reading_list_2022-09-06T10-59-04.345469.csv`
-    # output_filename: str = f'list_{datetime.datetime.now().isoformat()}.tsv'.replace( ':', '-' )[:22]  # produces, eg, `reading_list_2022-09-06T10-59-04.34.tsv`
-    datetimestamp: str = datetime.datetime.now().isoformat().replace( ':', '-' )[:22]
-    output_filename: str = f'list_{datetimestamp}.tsv'  # produces, eg, `reading_list_2022-09-06T10-59-04.34.tsv`
+    # datetimestamp: str = datetime.datetime.now().isoformat().replace( ':', '-' )[:22]
+    # output_filename: str = f'list_{datetimestamp}.tsv'  # produces, eg, `reading_list_2022-09-06T10-59-04.34.tsv`
+    output_filename: str = f'{uuid_string}.tsv'  # produces, eg, `abc-def-ghi.tsv`
     log.debug( f'output_filename, ``{output_filename}``' ) 
 
     # output_filepath: str = f'{CSV_OUTPUT_DIR_PATH}/2023_fall/{output_filename}'
