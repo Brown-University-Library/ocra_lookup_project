@@ -34,7 +34,7 @@
 
 <div id="purpose" style="width: 45em; margin: auto; padding-top: .5em;">
     <h1 style="color: maroon;">Purpose</h1>
-    <p>This form allows Library staff to do a quick lookup in OCRA for the most recent OCRA reading-list for a given course and professor -- and get back a reading-list file that can be viewed, or uploaded to Leganto.</p>
+    <p>This form allows Library staff to do a quick lookup in OCRA for the most recent OCRA reading-list for a given course and professor -- and get back a reading-list file that can be viewed, or uploaded directly to Leganto.</p>
     <p>The course-code and email-address are for the OCRA search. The "Year", "Term", and "Title" are for Leganto display fields.</p>
     <p>
         If you know the course-code, but not the exact email-address of the professor -- try looking up the course in 
@@ -59,6 +59,8 @@
             {{ form.course_code.errors }}
             {{ form.course_code.label_tag }}
             {{ form.course_code }}
+            <!-- {{ form.course_code.help_text }} -->
+            <span style="font-size: 0.8em; font-style: italic; color: rgb(68, 57, 57);">( use the format HIST_1234a )</span>
             <br>
             
             <!-- Email-address Field -->
@@ -74,6 +76,7 @@
             {{ form.year.errors }}
             {{ form.year.label_tag }}
             {{ form.year }}
+            <span style="font-size: 0.8em; font-style: italic; color: rgb(68, 57, 57);">( four-digit-year, eg 2023 )</span>
             <br>
             
             <!-- Term Field -->
@@ -108,5 +111,7 @@
     </div>
 
 </div>
+
+<hr>
 
 {% endblock content %}
