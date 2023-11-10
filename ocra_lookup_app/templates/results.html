@@ -18,12 +18,20 @@
 
 <div style="width: 50em; margin: auto; padding-top: .5em;">
     <h1 style="color: maroon;">Results</h1>
-    <p>OCRA reading-list results for course-code <span class="search-terms">"{{course_code}}"</span> and instructor-email <span class="search-terms">"{{email_address}}"</span>.</p>
-    <p>Click to view or download the file for leganto (not all browsers may offer viewing):</p>
+    <p style="margin-top: 2em;">OCRA reading-list results for:</p> 
     <ul>
-        <li><a href="{% url 'view_tsv' result_uuid %}" target="_blank">View Results</a></li>
-        <li><a href="{% url 'download_tsv' result_uuid %}">Download Results</a></li>
+        <li>course-code <span class="search-terms">"{{course_code}}"</span></li>
+        <li>instructor-email <span class="search-terms">"{{email_address}}"</span></li>
+    </ul>
+    {% if data %}
+        <p style="margin-top: 2em;">Click to view or download the leganto reading-list file (not all browsers may offer viewing):</p>
+        <ul>
+            <li><a href="{% url 'view_tsv' result_uuid %}" target="_blank">View Results</a></li>
+            <li><a href="{% url 'download_tsv' result_uuid %}">Download Results</a></li>
         </ul>
+    {% else %}
+        <h2 style="margin-top: 2em;">No results found.</h2>
+    {% endif %}
 </div>
 
 <hr>
