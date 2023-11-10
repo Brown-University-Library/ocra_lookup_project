@@ -27,8 +27,9 @@ log = logging.getLogger(__name__)
 # -------------------------------------------------------------------
 
 
-def info(request):
-    return HttpResponse( 'info coming' )
+# def info(request):
+#     return HttpResponse( 'info coming' )
+
 
 @ensure_csrf_cookie
 def find(request):
@@ -235,7 +236,7 @@ def version( request ):
 
 
 def root( request ):
-    return HttpResponseRedirect( reverse('info_url') )
+    return HttpResponseRedirect( reverse('find_url') )
 
 
 # -------------------------------------------------------------------
