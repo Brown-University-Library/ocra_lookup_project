@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
 {% block extra_head %}
+<style>
+
+    .search-terms {
+        color: maroon;
+        font-style: italic;
+    }
+    
+</style>
 {% endblock %}
 
 {% block header %}
@@ -8,13 +16,16 @@
 
 {% block content %}
 
-<div>
-    <h1>Results</h1>
+<div style="width: 50em; margin: auto; padding-top: .5em;">
+    <h1 style="color: maroon;">Results</h1>
+    <p>OCRA reading-list results for course-code <span class="search-terms">"{{course_code}}"</span> and instructor-email <span class="search-terms">"{{email_address}}"</span>.</p>
     <p>Click to view or download the file for leganto (not all browsers may offer viewing):</p>
     <ul>
         <li><a href="{% url 'view_tsv' result_uuid %}" target="_blank">View Results</a></li>
         <li><a href="{% url 'download_tsv' result_uuid %}">Download Results</a></li>
         </ul>
 </div>
+
+<hr>
 
 {% endblock content %}
