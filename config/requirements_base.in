@@ -1,7 +1,7 @@
-cryptography==41.0.5  # required by pymysql in certain situations
-Django==4.2.3
+cryptography==42.0.4  # required by pymysql in certain situations
+Django==4.2.14
 fuzzywuzzy==0.18.0
 git+https://github.com/birkin/shellvars-py.git
 pip-tools==6.13.0
-requests==2.29.0  # can't go higher, because it requires urllib3 2.x, which requires a version of open-ssl newer than the one on our servers.
+requests==2.32.2  # can't go higher, because it requires urllib3 2.x, which requires a version of open-ssl newer than the one on our servers.
 trio==0.22.0
