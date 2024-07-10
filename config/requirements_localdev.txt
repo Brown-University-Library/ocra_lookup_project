@@ -1,2 +1,2 @@
 -r requirements_base.txt
-PyMySQL==1.0.3
+PyMySQL==1.1.1
